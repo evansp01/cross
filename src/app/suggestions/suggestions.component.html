@@ -1,0 +1,13 @@
+
+
+<input type="text" [formControl]="searchStringForm">
+<button (click)="setVowel()">Vowels</button>
+<button (click)="setConsonant()">Consonants</button>
+
+<div *ngIf="searchStringForm.invalid && (searchStringForm.dirty || searchStringForm.touched)"
+    class="alert alert-danger">
+    ERROR YOUR REGEX IS BAD
+</div>
+
+<app-character-search [word]="acrossWord" [searchCharacter]="searchStringForm.value"></app-character-search>
+<app-character-search [word]="downWord" [searchCharacter]="searchStringForm.value"></app-character-search>

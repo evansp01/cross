@@ -1,0 +1,13 @@
+<svg id="crossword" viewBox="0 0 602 602" xmlns="http://www.w3.org/2000/svg" (focus)="1" (keydown)="onKeyPress($event)" focusable="true" tabindex="0">
+    <ng-container *ngFor="let row of grid.getDisplay()">
+    <ng-container *ngFor="let square of row">
+      <rect *ngIf="square.value == null && square.state == grid.displayState.REGULAR" class="blackbox" [attr.x]="1 + square.location.column * 40" [attr.y]="1 + square.location.row * 40" width="40" height="40" style="stroke-width: 1; stroke: rgb(55,55,55); fill:rgb(0,0,0);"></rect>
+      <rect *ngIf="square.value == null && square.state == grid.displayState.FOCUS"   class="blackbox" [attr.x]="1 + square.location.column * 40" [attr.y]="1 + square.location.row * 40" width="40" height="40" style="stroke-width: 1; stroke: rgb(55,55,55); fill:rgb(60, 20, 68);"></rect>
+      <rect *ngIf="square.value != null && square.state == grid.displayState.REGULAR"     [attr.x]="1 + square.location.column * 40" [attr.y]="1 + square.location.row * 40" width="40" height="40" style="fill: rgb(255,255,255); stroke-width: 1; stroke: rgb(55,55,55);"></rect>
+      <rect *ngIf="square.value != null && square.state == grid.displayState.FOCUS"       [attr.x]="1 + square.location.column * 40" [attr.y]="1 + square.location.row * 40" width="40" height="40" style="fill: rgb(241,245,130); stroke-width: 1; stroke: rgb(55,55,55);"></rect>
+      <rect *ngIf="square.value != null && square.state == grid.displayState.HIGHLIGHTED" [attr.x]="1 + square.location.column * 40" [attr.y]="1 + square.location.row * 40" width="40" height="40" style="fill: rgb(153,204,205); stroke-width: 1; stroke: rgb(55,55,55);"></rect>
+      <text *ngIf="square.value != null" class="inputText" [attr.x]="square.location.column * 40 + 19" [attr.y]="square.location.row * 40 + 35" text-anchor="middle" style="fill: black; font-size: 30px;">{{square.value}}</text>
+      <text *ngIf="square.value != null" [attr.x]="4 + square.location.column * 40" [attr.y]="12 + square.location.row*40" style="fill: black; font-size: 10px;">{{square.wordNumber}}</text>
+    </ng-container>
+    </ng-container>
+  </svg>

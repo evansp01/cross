@@ -1,0 +1,7 @@
+<p>Down Word: {{displayString}}</p>
+
+<cdk-virtual-scroll-viewport itemSize="20" class="list" style="height: 300px; width: 300px;">        
+    <div *cdkVirtualFor="let item of filteredCandidates" style="height: 20px">
+      {{ item }}
+    </div>
+</cdk-virtual-scroll-viewport>

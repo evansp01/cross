@@ -1,16 +1,41 @@
-<p>HELLO</p>
-<div id="wrapper" style="max-width: 700px; margin: 20px auto;">
-    <svg id="crossword" viewBox="0 0 605 605" xmlns="http://www.w3.org/2000/svg">
-      <ng-container *ngFor="let row of grid.display">
-      <ng-container *ngFor="let square of row">
-        <rect *ngIf="square.value == null && square.state == grid.displayState.REGULAR" class="blackbox" [attr.x]="1 + square.location.column * 40" [attr.y]="1 + square.location.row * 40" width="40" height="40" style="stroke-width: 1; stroke: rgb(55,55,55); fill:rgb(0,0,0);"></rect>
-        <rect *ngIf="square.value == null && square.state == grid.displayState.FOCUS"   class="blackbox" [attr.x]="1 + square.location.column * 40" [attr.y]="1 + square.location.row * 40" width="40" height="40" style="stroke-width: 1; stroke: rgb(55,55,55); fill:rgb(56, 7, 66);"></rect>
-        <rect *ngIf="square.value != null && square.state == grid.displayState.REGULAR"     [attr.x]="1 + square.location.column * 40" [attr.y]="1 + square.location.row * 40" width="40" height="40" style="fill: rgb(255,255,255); stroke-width: 1; stroke: rgb(55,55,55);"></rect>
-        <rect *ngIf="square.value != null && square.state == grid.displayState.FOCUS"       [attr.x]="1 + square.location.column * 40" [attr.y]="1 + square.location.row * 40" width="40" height="40" style="fill: rgb(241,245,130); stroke-width: 1; stroke: rgb(55,55,55);"></rect>
-        <rect *ngIf="square.value != null && square.state == grid.displayState.HIGHLIGHTED" [attr.x]="1 + square.location.column * 40" [attr.y]="1 + square.location.row * 40" width="40" height="40" style="fill: rgb(153,204,205); stroke-width: 1; stroke: rgb(55,55,55);"></rect>
-        <text *ngIf="square.value != null" class="inputText" [attr.x]="square.location.column * 40 + 19" [attr.y]="square.location.row * 40 + 35" text-anchor="middle" style="fill: black; font-size: 30px;">{{square.value}}</text>
-        <text *ngIf="square.value != null" [attr.x]="4 + square.location.column * 40" [attr.y]="12 + square.location.row*40" style="fill: black; font-size: 10px;">{{square.wordNumber}}</text>
-      </ng-container>
-      </ng-container>
-    </svg>
+<style>
+  #cw_container {
+    width: 500px;
+    height: 705px;
+    margin: 20px 0;
+    display: inline-block;
+    vertical-align: top;
+  }
+  
+  * {
+    cursor: default;
+  }
+  
+  *:focus {
+    outline: none;
+  }
+  
+  svg {
+    font-family: sans-serif;
+  }
+  </style>
+<head>
+  <title>Cross</title>
+</head>
+<div id="wrapper" style="max-width: 1000px; margin: 20px auto;">
+  <div style="width: 200px; margin: 0 auto; display: inline-block; vertical-align: top;">
+    <button (click)=saveToFile()>Save</button>
+    <div class="form-group">
+      <label for="file">Choose File</label>
+      <input type="file"
+             id="file"
+             (change)="handleFileInput($event.target.files)">
+    </div>
+  </div>
+  <div style="width: 500px; margin: 0 auto; display: inline-block; vertical-align: top;">
+    <app-grid></app-grid>
+  </div>
+  <div id="cluelist" style="max-width: 300px; margin: 0 auto; display: inline-block; vertical-align: top;">
+    <app-suggestions></app-suggestions>
+	</div>
 </div>

@@ -25,3 +25,11 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+# Navigation
+
+Tab: Go to next word (wrapping)
+Shift + Tab: Go to previous word (wrapping)
+Arrow keys navigate (orientation exists in white characters)
+Typing fills, you cannot wrap, typing will not overwrite black squares
+Typing a dot produces a black square and moves to the next square
