@@ -76,9 +76,12 @@ describe('PuzzService', () => {
       expect(puzz2.width).toEqual(puzz1.width);
       expect(puzz2.height).toEqual(puzz1.height);
       expect(puzz2.puzzle).toEqual(puzz1.puzzle);
-      expect(puzz2.state).toEqual(puzz1.state);
+      expect(puzz2.title).toEqual(puzz1.title);
+      expect(puzz2.author).toEqual(puzz1.author);
+      expect(puzz2.copyright).toEqual(puzz1.copyright);
+      expect(puzz2.notes).toEqual(puzz1.notes);
+      expect(puzz2.state.length).toEqual(puzz1.state.length);
       expect(puzz2.clues).toEqual(puzz1.clues);
-      expect(roundtrip).toEqual(file);
     }
   });
 });

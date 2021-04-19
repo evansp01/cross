@@ -52,15 +52,11 @@ export interface WordInfo {
   acrossGrid: (WordPosition | null)[][];
 }
 
-export interface PuzzleFile {
-  readonly file: Uint8Array;
-  readonly type: string;
-}
-
 export interface Data {
-  readonly originFile: PuzzleFile | null;
   readonly author: string;
   readonly title: string;
+  readonly copyright: string;
+  readonly notes: string;
 }
 
 export class Grid {
@@ -215,7 +211,7 @@ export class PuzzleState {
     return new PuzzleState(
       grid, clues,
       { location: { row: 0, column: 0 }, orientation: Orientation.ACROSS },
-      { originFile: null, title: '', author: ''});
+      { title: '', author: '', copyright: '', notes: ''});
   }
 
   private constructor(grid: Grid, existingClues: ClueSet, cursor: Cursor, data: Data) {

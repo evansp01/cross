@@ -115,7 +115,7 @@ export class Puzz {
   clues: string[];
   notes: string;
 
-  private postscript: Uint8Array;
+  private _postscript: Uint8Array;
 
   constructor() {
     this._preamble = Uint8Array.of();
@@ -134,7 +134,7 @@ export class Puzz {
     this.copyright = '';
     this.clues = [];
     this.notes = '';
-    this.postscript = Uint8Array.of();
+    this._postscript = Uint8Array.of();
   }
 
   read(buff: Uint8Array): void {
@@ -168,7 +168,7 @@ export class Puzz {
       this.clues.push(buf.readString());
     }
     this.notes = buf.readString();
-    this.postscript = buf.readBytes(buf.buf.length - buf.index);
+    this._postscript = buf.readBytes(buf.buf.length - buf.index);
 
     if (fileChecksum !== this.computeFileChecksum()) {
       throw Error('Fails file checksum');
@@ -192,9 +192,7 @@ export class Puzz {
     this._width = width;
     this._height = height;
     this._puzzle = puzzle;
-    if (this._state.length !== puzzle.length) {
-      this._state = puzzle;
-    }
+    this._state = this._puzzle.replace('[^.]', '-');
   }
 
   byteSize(): number {
@@ -202,7 +200,7 @@ export class Puzz {
     const gridAndSoln = 2 * this._width * this._height;
     const namedStrings = 4 + this.title.length + this.author.length + this.copyright.length + this.notes.length;
     const clues = this.clues.map(c => c.length + 1).reduce((a, b) => a + b, 0);
-    const junk = this._preamble.length + this.postscript.length;
+    const junk = this._preamble.length + this._postscript.length;
     return headerSize + gridAndSoln + namedStrings + clues + junk;
   }
 
@@ -231,7 +229,7 @@ export class Puzz {
       buf.writeString(clue + '\0');
     }
     buf.writeString(this.notes + '\0');
-    buf.writeBytes(this.postscript);
+    buf.writeBytes(this._postscript);
     return new Uint8Array(buf.buf.buffer);
   }
 
@@ -373,9 +371,10 @@ export class PuzzService {
       }
     }
     state = state.setData({
-      originFile: { file: puz.write(), type: 'puz' },
       title: puz.title,
       author: puz.author,
+      copyright: puz.copyright,
+      notes: puz.notes,
     });
     console.log(puz.clues.length);
     console.log(state.grid.getWordStarts().length);
@@ -383,10 +382,7 @@ export class PuzzService {
   }
 
   puzFromPuzzleState(state: PuzzleState): Uint8Array {
-    const puz = new Puzz();
-    if (state.data.originFile != null && state.data.originFile.type === 'puz') {
-      puz.read(state.data.originFile.file);
-    }
+
     const puzzle = state.grid.squares.map(row => row.map(square => {
       return valueToString(square.value);
     }).join('')).join('');
@@ -401,8 +397,11 @@ export class PuzzService {
         }
       }
     }
+    const puz = new Puzz();
     puz.author = state.data.author;
     puz.title = state.data.title;
+    puz.copyright = state.data.copyright;
+    puz.notes = state.data.notes;
     puz.clues = clues;
     puz.updatePuzzle(state.grid.rows, state.grid.columns, puzzle);
     console.log(state.grid.getWordStarts().length);

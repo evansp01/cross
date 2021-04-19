@@ -21,12 +21,13 @@ export class AppComponent {
   }
 
   handleFileInput(event: Event): void {
-    // tslint:disable-next-line: no-non-null-assertion
-    (event.target! as HTMLInputElement).files!.item(0)?.arrayBuffer().then((f) => {
-      const state = this.puzzService.puzzleStateFromPuz(new Uint8Array(f));
-      this.stateService.setState(state);
-      console.log(state.grid);
-    });
+    if (event.target instanceof HTMLInputElement && event.target.files != null) {
+      event.target.files.item(0)?.arrayBuffer().then((f) => {
+        const state = this.puzzService.puzzleStateFromPuz(new Uint8Array(f));
+        this.stateService.setState(state);
+        console.log(state.grid);
+      });
+    }
   }
 
   saveToFile(): void {
