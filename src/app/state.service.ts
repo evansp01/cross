@@ -104,6 +104,13 @@ export class Grid {
     return this.squares[location.row][location.column];
   }
 
+  rotate180(location: Location): Location {
+    return {
+      row: (this.rows - 1) - location.row,
+      column: (this.columns - 1) - location.column,
+    };
+  }
+
   getWordStarts(): WordStart[] {
     const words: WordStart[] = [];
     let index = 1;
@@ -220,12 +227,16 @@ export class PuzzleState {
   }
 
   setClue(cursor: Cursor, value: string): PuzzleState {
-    return new PuzzleState(this.grid, this.clues.setClue(cursor, value), cursor, this.data);
+    return new PuzzleState(this.grid, this.clues.setClue(cursor, value), this.cursor, this.data);
   }
 
-  setSquare(cursor: Cursor, value: Value): PuzzleState {
-    const newGrid = this.grid.setSquare(cursor.location, value);
-    return new PuzzleState(newGrid, this.clues.updateFrom(newGrid.getWordStarts()), cursor, this.data);
+  setSquare(location: Location, value: Value): PuzzleState {
+    const newGrid = this.grid.setSquare(location, value);
+    return new PuzzleState(newGrid, this.clues.updateFrom(newGrid.getWordStarts()), this.cursor, this.data);
+  }
+
+  setCursor(cursor: Cursor): PuzzleState {
+    return new PuzzleState(this.grid, this.clues, cursor, this.data);
   }
 
   setData(data: Data): PuzzleState {
@@ -306,19 +317,28 @@ export class StateService {
   }
 
   setClue(cursor: Cursor, value: string): PuzzleState {
-    return this.setState(this.getState().value.setClue(cursor, value));
+    const state = this.getState().value;
+    return this.setState(state.setClue(cursor, value)).setCursor(cursor);
   }
 
   setSquare(cursor: Cursor, value: Value): PuzzleState {
     const state = this.getState().value;
-    const square = state.grid.getSquare(cursor.location);
+    const square = state.grid.getSquare(cursor.location).value;
+    // If the current square is black, setting it black again will toggle.
     if (square === null && value === null) {
       value = '';
     }
+    let newState: PuzzleState;
     if (square === null && value !== null) {
-      
+      const rotated = state.grid.rotate180(cursor.location);
+      newState = state.setSquare(cursor.location, value).setSquare(rotated, '').setCursor(cursor);
+    } else if (value === null && square !== null) {
+      const rotated = state.grid.rotate180(cursor.location);
+      newState = state.setSquare(cursor.location, null).setSquare(rotated, null).setCursor(cursor);
+    } else {
+      newState = state.setSquare(cursor.location, value).setCursor(cursor);
     }
-    return this.setState(this.getState().value.setSquare(cursor, value));
+    return this.setState(newState);
   }
 
   undo(): void {
