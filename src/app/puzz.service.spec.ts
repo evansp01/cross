@@ -55,12 +55,29 @@ describe('PuzzService', () => {
   });
 
   it('should roundtrip files to PuzzleState', () => {
-    for (const fileName of  filesList) {
+    for (const fileName of filesList) {
+      if (fileName ===  'src/app/testdata/nyt_diagramless.puz') {
+        // We lack support for diagramless puzzles.
+        continue;
+      }
       // tslint:disable-next-line: no-non-null-assertion
       const file = files.get(fileName)!;
+
+      const puzz1 = new Puzz();
+      puzz1.read(file);
+
       const roundtrip = service.puzFromPuzzleState(service.puzzleStateFromPuz(file));
-      console.log(roundtrip.length);
-      console.log(file.length);
+
+      const puzz2 = new Puzz();
+      puzz2.read(roundtrip);
+
+      console.log(puzz1.puzzle);
+      console.log(puzz1.state);
+      expect(puzz2.width).toEqual(puzz1.width);
+      expect(puzz2.height).toEqual(puzz1.height);
+      expect(puzz2.puzzle).toEqual(puzz1.puzzle);
+      expect(puzz2.state).toEqual(puzz1.state);
+      expect(puzz2.clues).toEqual(puzz1.clues);
       expect(roundtrip).toEqual(file);
     }
   });

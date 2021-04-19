@@ -92,18 +92,22 @@ class PuzzBuffer {
 export class Puzz {
   static readonly magic = 'ACROSS&DOWN';
 
-  preamble: Uint8Array;
-  versionString: string;
-  reserved1C: Uint8Array;
-  scrambledChecksum: number;
-  reserved20: Uint8Array;
-  width: number;
-  height: number;
-  puzzleType: number;
-  scrambledTag: number;
+  private _preamble: Uint8Array;
+  private _versionString: string;
+  private _reserved1C: Uint8Array;
+  private _scrambledChecksum: number;
+  private _reserved20: Uint8Array;
+  private _width: number;
+  get width(): number { return this._width; }
+  private _height: number;
+  get height(): number { return this._height; }
+  private _puzzleType: number;
+  private _scrambledTag: number;
 
-  puzzle: string;
-  state: string;
+  get puzzle(): string { return this._puzzle; }
+  private _puzzle: string;
+  get state(): string { return this._state; }
+  private _state: string;
 
   title: string;
   author: string;
@@ -111,20 +115,20 @@ export class Puzz {
   clues: string[];
   notes: string;
 
-  postscript: Uint8Array;
+  private postscript: Uint8Array;
 
   constructor() {
-    this.preamble = Uint8Array.of();
-    this.versionString = '1.3';
-    this.reserved1C = new Uint8Array(2);
-    this.scrambledChecksum = 0;
-    this.reserved20 = new Uint8Array(12);
-    this.width = 0;
-    this.height = 0;
-    this.puzzleType = 0x0001;
-    this.scrambledTag = 0x0000;
-    this.puzzle = '';
-    this.state = '';
+    this._preamble = Uint8Array.of();
+    this._versionString = '1.3';
+    this._reserved1C = new Uint8Array(2);
+    this._scrambledChecksum = 0;
+    this._reserved20 = new Uint8Array(12);
+    this._width = 0;
+    this._height = 0;
+    this._puzzleType = 0x0001;
+    this._scrambledTag = 0x0000;
+    this._puzzle = '';
+    this._state = '';
     this.title = '';
     this.author = '';
     this.copyright = '';
@@ -138,24 +142,24 @@ export class Puzz {
     if (!buf.seekTo(Puzz.magic, -2)) {
       throw Error('Missing magic string, prob not a thing');
     }
-    this.preamble = buf.buf.slice(0, buf.index);
+    this._preamble = buf.buf.slice(0, buf.index);
     const fileChecksum = buf.readShort();
     // "ACROSS&DOWN"
     buf.readBytes(12);
     const headerChecksum =  buf.readShort();
     const magicChecksum = buf.readBytes(8);
     // TODO: handle version.
-    this.versionString = buf.readStringN(4);
-    this.reserved1C = buf.readBytes(2);
-    this.scrambledChecksum = buf.readShort();
-    this.reserved20 = buf.readBytes(12);
-    this.width = buf.readChar();
-    this.height = buf.readChar();
+    this._versionString = buf.readStringN(4);
+    this._reserved1C = buf.readBytes(2);
+    this._scrambledChecksum = buf.readShort();
+    this._reserved20 = buf.readBytes(12);
+    this._width = buf.readChar();
+    this._height = buf.readChar();
     const clueCount = buf.readShort();
-    this.puzzleType = buf.readShort();
-    this.scrambledTag = buf.readShort();
-    this.puzzle = buf.readStringN(this.width * this.height);
-    this.state = buf.readStringN(this.width * this.height);
+    this._puzzleType = buf.readShort();
+    this._scrambledTag = buf.readShort();
+    this._puzzle = buf.readStringN(this._width * this._height);
+    this._state = buf.readStringN(this._width * this._height);
     this.title = buf.readString();
     this.author =  buf.readString();
     this.copyright =  buf.readString();
@@ -180,33 +184,46 @@ export class Puzz {
     }
   }
 
+
+  updatePuzzle(width: number, height: number, puzzle: string): void {
+    if (width * height !== puzzle.length) {
+      throw Error('puzzle does not match dimensions');
+    }
+    this._width = width;
+    this._height = height;
+    this._puzzle = puzzle;
+    if (this._state.length !== puzzle.length) {
+      this._state = puzzle;
+    }
+  }
+
   byteSize(): number {
     const headerSize = 52;
-    const gridAndSoln = 2 * this.width * this.height;
+    const gridAndSoln = 2 * this._width * this._height;
     const namedStrings = 4 + this.title.length + this.author.length + this.copyright.length + this.notes.length;
     const clues = this.clues.map(c => c.length + 1).reduce((a, b) => a + b, 0);
-    const junk = this.preamble.length + this.postscript.length;
+    const junk = this._preamble.length + this.postscript.length;
     return headerSize + gridAndSoln + namedStrings + clues + junk;
   }
 
   write(): Uint8Array {
     const buf = new PuzzBuffer(new Uint8Array(this.byteSize()));
-    buf.writeBytes(this.preamble);
+    buf.writeBytes(this._preamble);
     buf.writeShort(this.computeFileChecksum());
     buf.writeString(Puzz.magic + '\0');
     buf.writeShort(this.computeHeaderChecksum());
     buf.writeBytes(this.computeMagicChecksum());
-    buf.writeStringN(this.versionString, 4);
-    buf.writeBytes(this.reserved1C);
-    buf.writeShort(this.scrambledChecksum);
-    buf.writeBytes(this.reserved20);
-    buf.writeChar(this.width);
-    buf.writeChar(this.height);
+    buf.writeStringN(this._versionString, 4);
+    buf.writeBytes(this._reserved1C);
+    buf.writeShort(this._scrambledChecksum);
+    buf.writeBytes(this._reserved20);
+    buf.writeChar(this._width);
+    buf.writeChar(this._height);
     buf.writeShort(this.clues.length);
-    buf.writeShort(this.puzzleType);
-    buf.writeShort(this.scrambledTag);
-    buf.writeStringN(this.puzzle, this.width * this.height);
-    buf.writeStringN(this.state, this.width * this.height);
+    buf.writeShort(this._puzzleType);
+    buf.writeShort(this._scrambledTag);
+    buf.writeStringN(this._puzzle, this._width * this._height);
+    buf.writeStringN(this._state, this._width * this._height);
     buf.writeString(this.title + '\0');
     buf.writeString(this.author + '\0');
     buf.writeString(this.copyright + '\0');
@@ -240,11 +257,11 @@ export class Puzz {
 
   computeHeaderChecksum(checksum: number = 0): number {
     const buf = new PuzzBuffer(new Uint8Array(8));
-    buf.writeChar(this.width);
-    buf.writeChar(this.height);
+    buf.writeChar(this._width);
+    buf.writeChar(this._height);
     buf.writeShort(this.clues.length);
-    buf.writeShort(this.puzzleType);
-    buf.writeShort(this.scrambledTag);
+    buf.writeShort(this._puzzleType);
+    buf.writeShort(this._scrambledTag);
     return this.checksumBuffer(buf.buf, checksum);
   }
 
@@ -272,16 +289,16 @@ export class Puzz {
 
   computeFileChecksum(checksum: number = 0): number {
     checksum = this.computeHeaderChecksum(checksum);
-    checksum = this.checksumString(this.puzzle, checksum);
-    checksum = this.checksumString(this.state, checksum);
+    checksum = this.checksumString(this._puzzle, checksum);
+    checksum = this.checksumString(this._state, checksum);
     checksum = this.computeTextChecksum(checksum);
     return checksum;
   }
 
   computeMagicChecksum(): Uint8Array {
     const headerChecksum = this.computeHeaderChecksum();
-    const solutionChecksum = this.checksumString(this.puzzle);
-    const fillChecksum = this.checksumString(this.state);
+    const solutionChecksum = this.checksumString(this._puzzle);
+    const fillChecksum = this.checksumString(this._state);
     const textChecksum = this.computeTextChecksum();
     const magic = new Uint8Array(8);
 
@@ -297,6 +314,28 @@ export class Puzz {
     magic[7] = 0x44 ^ ((textChecksum & 0xFF00) >> 8);
     // tslint:enable: no-bitwise
     return magic;
+  }
+}
+
+function stringToValue(char: string): Value {
+  switch (char) {
+    case '.':
+      return null;
+    case ' ':
+      return '';
+    default:
+      return char;
+  }
+}
+
+function valueToString(value: Value): string {
+  switch (value) {
+    case null:
+      return '.';
+    case '':
+      return ' ';
+    default:
+      return value;
   }
 }
 
@@ -317,11 +356,7 @@ export class PuzzService {
     let grid = Grid.emptyGrid(puz.width);
     for (let i = 0; i < puz.width; i++) {
       for (let j = 0; j < puz.width; j++) {
-        let value: Value = puz.puzzle[i * puz.width + j];
-        if (value === '.') {
-          value = null;
-        }
-        grid = grid.setSquare({ row: i, column: j}, value);
+        grid = grid.setSquare({ row: i, column: j}, stringToValue(puz.puzzle[i * puz.width + j]));
       }
     }
     let state = PuzzleState.newStateFromGrid(grid);
@@ -342,6 +377,8 @@ export class PuzzService {
       title: puz.title,
       author: puz.author,
     });
+    console.log(puz.clues.length);
+    console.log(state.grid.getWordStarts().length);
     return state;
   }
 
@@ -350,32 +387,28 @@ export class PuzzService {
     if (state.data.originFile != null && state.data.originFile.type === 'puz') {
       puz.read(state.data.originFile.file);
     }
-    puz.width = state.grid.rows;
-    puz.height = state.grid.rows;
-    puz.author = state.data.author;
-    puz.title = state.data.title;
-    puz.puzzle = state.grid.squares.map(row => row.map(square => {
-      if (square.value === null) {
-        return '.';
-      } else if (square.value === '') {
-        return ' ';
-      } else  {
-        return square.value;
-      }
+    const puzzle = state.grid.squares.map(row => row.map(square => {
+      return valueToString(square.value);
     }).join('')).join('');
-    console.log(puz.clues);
-    puz.clues = [];
+    const clues = [];
     for (let row = 0; row < state.grid.rows; row++) {
       for (let column = 0; column < state.grid.columns; column++) {
         for (const orientation of [Orientation.ACROSS, Orientation.DOWN]) {
           const clue = state.clues.getClue({orientation, location: { row, column}});
           if (clue !== undefined) {
-            puz.clues.push(clue.value);
+            clues.push(clue.value);
           }
         }
       }
     }
-    console.log(puz.clues);
+    puz.author = state.data.author;
+    puz.title = state.data.title;
+    puz.clues = clues;
+    puz.updatePuzzle(state.grid.rows, state.grid.columns, puzzle);
+    console.log(state.grid.getWordStarts().length);
+    console.log(puz.clues.length);
     return puz.write();
   }
 }
+
+
