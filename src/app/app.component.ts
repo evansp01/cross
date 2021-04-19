@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { PuzzService } from './puzz.service';
 import { StateService } from './state.service';
 import { saveAs } from 'file-saver';
+import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-root',
@@ -19,8 +20,9 @@ export class AppComponent {
     this.stateService = stateService;
   }
 
-  handleFileInput(files: FileList): void {
-    files.item(0)?.arrayBuffer().then((f) => {
+  handleFileInput(event: Event): void {
+    // tslint:disable-next-line: no-non-null-assertion
+    (event.target! as HTMLInputElement).files!.item(0)?.arrayBuffer().then((f) => {
       const state = this.puzzService.puzzleStateFromPuz(new Uint8Array(f));
       this.stateService.setState(state);
       console.log(state.grid);
