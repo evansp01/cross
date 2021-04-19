@@ -70,7 +70,7 @@ export class GridDisplayService {
     this.stateService.getState().subscribe({
       next: s => {
         this.refreshDisplayFromState(s);
-      }
+      },
     });
   }
 

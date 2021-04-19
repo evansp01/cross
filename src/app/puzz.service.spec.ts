@@ -59,6 +59,8 @@ describe('PuzzService', () => {
       // tslint:disable-next-line: no-non-null-assertion
       const file = files.get(fileName)!;
       const roundtrip = service.puzFromPuzzleState(service.puzzleStateFromPuz(file));
+      console.log(roundtrip.length);
+      console.log(file.length);
       expect(roundtrip).toEqual(file);
     }
   });

@@ -325,26 +325,23 @@ export class PuzzService {
       }
     }
     let state = PuzzleState.newStateFromGrid(grid);
-    for (const start of state.grid.getWordStarts()) {
-      state = state.setClue(start.cursor, puz.clues[start.index]);
-    }
-    state = state.setData({
-      originFile: { file: puz.write(), type: 'puz' },
-      title: puz.title,
-      author: puz.author,
-    });
     let clueIndex = 0;
     for (let row = 0; row < state.grid.rows; row++) {
       for (let column = 0; column < state.grid.columns; column++) {
         for (const orientation of [Orientation.ACROSS, Orientation.DOWN]) {
           const clue = state.clues.getClue({orientation, location: { row, column}});
           if (clue !== undefined) {
-            state.clues.setClue(clue.cursor, puz.clues[clueIndex]);
+            state = state.setClue(clue.cursor, puz.clues[clueIndex]);
             clueIndex++;
           }
         }
       }
     }
+    state = state.setData({
+      originFile: { file: puz.write(), type: 'puz' },
+      title: puz.title,
+      author: puz.author,
+    });
     return state;
   }
 
@@ -364,6 +361,8 @@ export class PuzzService {
         return square.value;
       }
     }).join('')).join('');
+    console.log(puz.clues);
+    puz.clues = [];
     for (let row = 0; row < state.grid.rows; row++) {
       for (let column = 0; column < state.grid.columns; column++) {
         for (const orientation of [Orientation.ACROSS, Orientation.DOWN]) {
@@ -374,6 +373,7 @@ export class PuzzService {
         }
       }
     }
+    console.log(puz.clues);
     return puz.write();
   }
 }
