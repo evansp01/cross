@@ -357,6 +357,8 @@ export class PuzzService {
     puz.puzzle = state.grid.squares.map(row => row.map(square => {
       if (square.value === null) {
         return '.';
+      } else if (square.value === '') {
+        return ' ';
       } else  {
         return square.value;
       }

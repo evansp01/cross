@@ -100,6 +100,10 @@ export class Grid {
     return new Grid(squares);
   }
 
+  getSquare(location: Location): Square {
+    return this.squares[location.row][location.column];
+  }
+
   getWordStarts(): WordStart[] {
     const words: WordStart[] = [];
     let index = 1;
@@ -306,6 +310,14 @@ export class StateService {
   }
 
   setSquare(cursor: Cursor, value: Value): PuzzleState {
+    const state = this.getState().value;
+    const square = state.grid.getSquare(cursor.location);
+    if (square === null && value === null) {
+      value = '';
+    }
+    if (square === null && value !== null) {
+      
+    }
     return this.setState(this.getState().value.setSquare(cursor, value));
   }
 
