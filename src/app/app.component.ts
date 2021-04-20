@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { PuzzService } from './puzz.service';
 import { StateService } from './state.service';
 import { saveAs } from 'file-saver';
-import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-root',

@@ -20,6 +20,7 @@ export class CharacterSearchComponent implements OnInit, OnChanges {
 
   @Input()  word!: DisplayWord|null;
   @Input()  searchCharacter!: string;
+  @Input()  label!: string;
   dictionaryService: DictionaryService;
 
   private candidates: string[];

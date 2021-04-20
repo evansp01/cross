@@ -1,0 +1,23 @@
+<table class="table-with-input">
+ <tr><td colspan="3">Across Clues</td></tr>
+<ng-container *ngFor="let clue of acrossClues trackBy: trackByCursor">
+  <tr>
+    <td><div>{{clue.index}}A. </div></td>
+    <td>{{clue.word}}</td>
+    <td style="min-width: 200px;">
+      <quill-editor [(ngModel)]="clue.clue" #modelRef="ngModel" (focusin)="selectClue(clue)" (focusout)="commitClue(clue)"></quill-editor>
+    </td>
+  </tr>
+</ng-container>
+
+    <tr><td colspan="3">Down Clues</td></tr>
+   <ng-container *ngFor="let clue of downClues trackBy: trackByCursor">
+     <tr>
+       <td><div>{{clue.index}}A. </div></td>
+       <td>{{clue.word}}</td>
+       <td style="min-width: 200px;">
+         <quill-editor [(ngModel)]="clue.clue" #modelRef="ngModel"  (focusin)="selectClue(clue)" (focusout)="commitClue(clue)"></quill-editor>
+       </td>
+     </tr>
+   </ng-container>
+</table>
