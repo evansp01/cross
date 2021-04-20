@@ -12,7 +12,7 @@ interface DisplayClue {
 function wordToDisplayClue(word: Word): DisplayClue {
   const text =  word.squares.map((s: Square) => {
     if (s.value === '') {
-      return '□';
+      return '_';
     } else {
       return s.value;
     }

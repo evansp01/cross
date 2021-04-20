@@ -63,7 +63,6 @@ export class SuggestionsComponent implements OnInit {
     } else {
       this.searchStringForm.disable({ onlySelf: true });
     }
-
   }
 
   ngOnInit(): void {

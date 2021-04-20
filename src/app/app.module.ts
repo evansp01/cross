@@ -22,6 +22,18 @@ import { QuillModule } from 'ngx-quill';
       modules: {
         syntax: false,
         toolbar: false,
+        keyboard: {
+          bindings: {
+            tab: {
+              key: 9,
+              handler: () => true
+            },
+            handleEnter: {
+              key: 13,
+              handler: () => false
+            }
+          },
+        }
       },
       theme: 'bubble',
       formats: [],
