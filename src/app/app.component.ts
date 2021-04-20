@@ -20,11 +20,15 @@ export class AppComponent {
   }
 
   handleFileInput(event: Event): void {
-    if (event.target instanceof HTMLInputElement && event.target.files != null) {
-      event.target.files.item(0)?.arrayBuffer().then((f) => {
-        const state = this.puzzService.puzzleStateFromPuz(new Uint8Array(f));
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.item(0);
+    if (file) {
+      file.arrayBuffer().then((buffer) => {
+        const state = this.puzzService.puzzleStateFromPuz(new Uint8Array(buffer));
         this.stateService.setState(state);
         console.log(state.grid);
+        // Reset the file input
+        target.value = '';
       });
     }
   }
