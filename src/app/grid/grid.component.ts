@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { GridDisplayService } from '../grid-display.service';
+import { DisplaySquare, GridDisplayService } from '../grid-display.service';
 import { StateService } from '../state.service';
 
 @Component({
@@ -18,6 +18,10 @@ export class GridComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  clicked(square: DisplaySquare): void {
+    this.grid.moveCursorToSquareOrToggle(square.location);
   }
 
   // @HostListener('window:keydown', ['$event'])

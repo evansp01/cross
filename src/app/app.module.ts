@@ -11,10 +11,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CluesComponent } from './clues/clues.component';
 import { QuillModule } from 'ngx-quill';
+import { WordSearchComponent } from './word-search/word-search.component';
 
 @NgModule({
   declarations: [
-    AppComponent, SuggestionsComponent, GridComponent, CharacterSearchComponent, CluesComponent
+    AppComponent, SuggestionsComponent, GridComponent, CharacterSearchComponent, CluesComponent, WordSearchComponent
   ],
   imports: [
     BrowserModule, ScrollingModule, FormsModule, ReactiveFormsModule, BrowserAnimationsModule, NgbModule,

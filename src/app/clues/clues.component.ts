@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { GridDisplayService } from '../grid-display.service';
 import { Clue, Cursor, Orientation, Square, StateService, Word } from '../state.service';
 
 interface DisplayClue {
@@ -33,12 +34,14 @@ function wordToDisplayClue(word: Word): DisplayClue {
 })
 export class CluesComponent implements OnInit {
   private stateService: StateService;
+  private gridDisplay: GridDisplayService;
 
   acrossClues: Array<DisplayClue>;
   downClues: Array<DisplayClue>;
 
-  constructor(stateService: StateService) {
+  constructor(stateService: StateService, gridDisplay: GridDisplayService) {
     this.stateService = stateService;
+    this.gridDisplay = gridDisplay;
     this.acrossClues = [];
     this.downClues = [];
   }
@@ -51,7 +54,7 @@ export class CluesComponent implements OnInit {
   }
 
   selectClue(clue: DisplayClue): void {
-      this.stateService.setCursor(clue.cursor);
+      this.gridDisplay.moveCursor(clue.cursor);
   }
 
   ngOnInit(): void {

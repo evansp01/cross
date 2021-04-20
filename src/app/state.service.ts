@@ -317,11 +317,6 @@ export class StateService {
     return this.setState(state.setClue(cursor, value)).setCursor(cursor);
   }
 
-  setCursor(cursor: Cursor): PuzzleState {
-    const state = this.getState().value;
-    return this.setState(state.setCursor(cursor));
-  }
-
   setSquare(cursor: Cursor, value: Value): PuzzleState {
     const state = this.getState().value;
     const square = state.grid.getSquare(cursor.location).value;

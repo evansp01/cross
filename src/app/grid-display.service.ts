@@ -16,6 +16,15 @@ function wordToDisplay(word: Word, pos: WordPosition): DisplayWord {
   };
 }
 
+function switchOrientation(orientation: Orientation): Orientation {
+  switch(orientation) {
+    case Orientation.ACROSS:
+      return Orientation.DOWN;
+      case Orientation.DOWN:
+        return Orientation.ACROSS;
+  }
+}
+
 export enum DisplayState {
   REGULAR,
   HIGHLIGHTED,
@@ -144,6 +153,23 @@ export class GridDisplayService {
       location: { row: this.cursor.location.row, column },
       orientation: Orientation.ACROSS
     };
+    this.updateDisplayHighlighting();
+  }
+
+  moveCursorToSquareOrToggle(location: Location): void {
+    if (location === this.cursor.location) {
+      this.cursor = {
+        location: this.cursor.location,
+        orientation: switchOrientation(this.cursor.orientation)
+      };
+    } else {
+      this.cursor = {location, orientation: this.cursor.orientation};
+    }
+    this.updateDisplayHighlighting();
+  }
+
+  moveCursor(cursor: Cursor): void {
+    this.cursor = cursor;
     this.updateDisplayHighlighting();
   }
 
