@@ -17,7 +17,7 @@ function wordToDisplay(word: Word, pos: WordPosition): DisplayWord {
 }
 
 function switchOrientation(orientation: Orientation): Orientation {
-  switch(orientation) {
+  switch (orientation) {
     case Orientation.ACROSS:
       return Orientation.DOWN;
       case Orientation.DOWN:
@@ -54,13 +54,13 @@ export class GridDisplayService {
   private stateService: StateService;
   private display: DisplaySquare[][];
 
-  private cursor!: Cursor;
   private rows!: number;
   private columns!: number;
   private wordInfo!: WordInfo;
 
   private acrossWord: BehaviorSubject<DisplayWord | null>;
   private downWord: BehaviorSubject<DisplayWord | null>;
+  private cursor: BehaviorSubject<Cursor>;
 
   constructor(stateService: StateService) {
     this.stateService = stateService;
@@ -75,6 +75,7 @@ export class GridDisplayService {
     }));
     this.acrossWord = new BehaviorSubject<DisplayWord | null>(null);
     this.downWord = new BehaviorSubject<DisplayWord | null>(null);
+    this.cursor = new BehaviorSubject<Cursor>(state.cursor);
     this.refreshDisplayFromState(state);
     this.stateService.getState().subscribe({
       next: s => {
@@ -84,7 +85,7 @@ export class GridDisplayService {
   }
 
   private refreshDisplayFromState(state: PuzzleState): void {
-    this.cursor = state.cursor;
+    const cursor = state.cursor;
     this.rows = state.grid.rows;
     this.columns = state.grid.columns;
     this.wordInfo = state.makeWordInfo();
@@ -98,22 +99,22 @@ export class GridDisplayService {
     this.wordInfo.downWords.forEach(w => {
       this.display[w.cursor.location.row][w.cursor.location.column].wordNumber = w.index;
     });
-    this.updateDisplayHighlighting();
+    this.updateDisplayHighlighting(cursor);
   }
 
-  private updateDisplayHighlighting(): void {
+  private updateDisplayHighlighting(cursor: Cursor): void {
     this.display.forEach(row => row.forEach(square => {
       square.state = DisplayState.REGULAR;
     }));
-    const acrossWordNum = this.wordInfo.acrossGrid[this.cursor.location.row][this.cursor.location.column];
-    const downWordNum = this.wordInfo.downGrid[this.cursor.location.row][this.cursor.location.column];
+    const acrossWordNum = this.wordInfo.acrossGrid[cursor.location.row][cursor.location.column];
+    const downWordNum = this.wordInfo.downGrid[cursor.location.row][cursor.location.column];
     if (acrossWordNum != null && downWordNum != null) {
       const acrossWord = this.wordInfo.acrossWords.get(acrossWordNum.word);
       const downWord = this.wordInfo.downWords.get(downWordNum.word);
       if (acrossWord === undefined || downWord === undefined) {
         throw Error('internal state broken');
       }
-      const toHighlight = this.cursor.orientation === Orientation.ACROSS ? acrossWord : downWord;
+      const toHighlight = cursor.orientation === Orientation.ACROSS ? acrossWord : downWord;
       toHighlight.squares.forEach(s => {
         this.display[s.location.row][s.location.column].state = DisplayState.HIGHLIGHTED;
       });
@@ -123,11 +124,13 @@ export class GridDisplayService {
       this.downWord.next(null);
       this.acrossWord.next(null);
     }
-    this.display[this.cursor.location.row][this.cursor.location.column].state = DisplayState.FOCUS;
+    this.display[cursor.location.row][cursor.location.column].state = DisplayState.FOCUS;
+    this.cursor.next(cursor);
   }
 
   private currentSquare(): Square {
-    return this.display[this.cursor.location.row][this.cursor.location.column];
+    const cursor = this.cursor.value;
+    return this.display[cursor.location.row][cursor.location.column];
   }
 
   getDisplay(): DisplaySquare[][] {
@@ -142,57 +145,62 @@ export class GridDisplayService {
     return this.downWord.pipe(displayWordComparitor());
   }
 
+  getCursor(): Observable<Cursor> {
+    return this.cursor;
+  }
+
   moveAcross(step: number): void {
-    let column = this.cursor.location.column;
-    if (this.currentSquare().value == null || this.cursor.orientation === Orientation.ACROSS) {
+    const cursor = this.cursor.value;
+    let column = cursor.location.column;
+    if (this.currentSquare().value == null || cursor.orientation === Orientation.ACROSS) {
       if (column + step >= 0 && column + step < this.columns) {
         column += step;
       }
     }
-    this.cursor = {
-      location: { row: this.cursor.location.row, column },
+    this.updateDisplayHighlighting({
+      location: { row: cursor.location.row, column },
       orientation: Orientation.ACROSS
-    };
-    this.updateDisplayHighlighting();
+    });
   }
 
   moveCursorToSquareOrToggle(location: Location): void {
-    if (location === this.cursor.location) {
-      this.cursor = {
-        location: this.cursor.location,
-        orientation: switchOrientation(this.cursor.orientation)
+    let cursor = this.cursor.value;
+    if (location === cursor.location) {
+      cursor = {
+        location: cursor.location,
+        orientation: switchOrientation(cursor.orientation)
       };
     } else {
-      this.cursor = {location, orientation: this.cursor.orientation};
+      cursor = {location, orientation: cursor.orientation};
     }
-    this.updateDisplayHighlighting();
+    this.updateDisplayHighlighting(cursor);
   }
 
   moveCursor(cursor: Cursor): void {
-    this.cursor = cursor;
-    this.updateDisplayHighlighting();
+    this.updateDisplayHighlighting(cursor);
   }
 
   moveDown(step: number): void {
-    let row = this.cursor.location.row;
-    if (this.currentSquare().value == null || this.cursor.orientation === Orientation.DOWN) {
+    const cursor = this.cursor.value;
+    let row = cursor.location.row;
+    if (this.currentSquare().value == null || cursor.orientation === Orientation.DOWN) {
       if (row + step >= 0 && row + step < this.rows) {
         row += step;
       }
     }
-    this.cursor = {
-      location: { row, column: this.cursor.location.column },
+    this.updateDisplayHighlighting({
+      location: { row, column: cursor.location.column },
       orientation: Orientation.DOWN
-    };
-    this.updateDisplayHighlighting();
+    });
   }
 
   mutateAndStep(value: Value, step: number): void {
-    this.stateService.setSquare(this.cursor, value);
-    if (this.cursor.orientation === Orientation.ACROSS) {
+    const cursor = this.cursor.value;
+    this.stateService.setSquare(cursor, value);
+    if (cursor.orientation === Orientation.ACROSS) {
       this.moveAcross(step);
     }
-    if (this.cursor.orientation === Orientation.DOWN) {
+    if (cursor.orientation === Orientation.DOWN) {
       this.moveDown(step);
     }
   }
