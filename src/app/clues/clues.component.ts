@@ -49,7 +49,9 @@ export class CluesComponent implements OnInit {
   commitClue(clue: DisplayClue): void {
     console.log(clue);
     if (clue.clue !== clue.clean) {
-      this.stateService.setClue(clue.cursor, clue.clue);
+      // Make sure no newlines or leading/trailing whitespace sneaks into the clues.
+      const cleaned = clue.clue.replace(/[\r\n]|/g, ' ').trim();
+      this.stateService.setClue(clue.cursor, cleaned);
     }
   }
 
