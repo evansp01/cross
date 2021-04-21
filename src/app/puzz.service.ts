@@ -146,7 +146,7 @@ export class Puzz {
     const fileChecksum = buf.readShort();
     // "ACROSS&DOWN"
     buf.readBytes(12);
-    const headerChecksum =  buf.readShort();
+    const headerChecksum = buf.readShort();
     const magicChecksum = buf.readBytes(8);
     // TODO: handle version.
     this._versionString = buf.readStringN(4);
@@ -161,8 +161,8 @@ export class Puzz {
     this._puzzle = buf.readStringN(this._width * this._height);
     this._state = buf.readStringN(this._width * this._height);
     this.title = buf.readString();
-    this.author =  buf.readString();
-    this.copyright =  buf.readString();
+    this.author = buf.readString();
+    this.copyright = buf.readString();
     this.clues = [];
     for (let i = 0; i < clueCount; i++) {
       this.clues.push(buf.readString());
@@ -354,7 +354,7 @@ export class PuzzService {
     let grid = Grid.emptyGrid(puz.width);
     for (let i = 0; i < puz.width; i++) {
       for (let j = 0; j < puz.width; j++) {
-        grid = grid.setSquare({ row: i, column: j}, stringToValue(puz.puzzle[i * puz.width + j]));
+        grid = grid.setSquare({ row: i, column: j }, stringToValue(puz.puzzle[i * puz.width + j]));
       }
     }
     let state = PuzzleState.newStateFromGrid(grid);
@@ -362,7 +362,7 @@ export class PuzzService {
     for (let row = 0; row < state.grid.rows; row++) {
       for (let column = 0; column < state.grid.columns; column++) {
         for (const orientation of [Orientation.ACROSS, Orientation.DOWN]) {
-          const clue = state.clues.getClue({orientation, location: { row, column}});
+          const clue = state.clues.getClue({ orientation, location: { row, column } });
           if (clue !== undefined) {
             state = state.setClue(clue.cursor, puz.clues[clueIndex]);
             clueIndex++;
@@ -390,7 +390,7 @@ export class PuzzService {
     for (let row = 0; row < state.grid.rows; row++) {
       for (let column = 0; column < state.grid.columns; column++) {
         for (const orientation of [Orientation.ACROSS, Orientation.DOWN]) {
-          const clue = state.clues.getClue({orientation, location: { row, column}});
+          const clue = state.clues.getClue({ orientation, location: { row, column } });
           if (clue !== undefined) {
             clues.push(clue.value);
           }

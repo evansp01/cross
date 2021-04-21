@@ -37,15 +37,15 @@ describe('PuzzService', () => {
     service = TestBed.inject(PuzzService);
   });
   beforeAll((done) => {
-  const requests = filesList.map(async f => {
-    const arr = await createRequest(f);
-    files.set(f, arr);
+    const requests = filesList.map(async f => {
+      const arr = await createRequest(f);
+      files.set(f, arr);
+    });
+    Promise.all(requests).then(done);
   });
-  Promise.all(requests).then(done);
-});
 
   it('should roundtrip files', () => {
-    for (const fileName of  filesList) {
+    for (const fileName of filesList) {
       // tslint:disable-next-line: no-non-null-assertion
       const file = files.get(fileName)!;
       const puzz = new Puzz();
@@ -56,7 +56,7 @@ describe('PuzzService', () => {
 
   it('should roundtrip files to PuzzleState', () => {
     for (const fileName of filesList) {
-      if (fileName ===  'src/app/testdata/nyt_diagramless.puz') {
+      if (fileName === 'src/app/testdata/nyt_diagramless.puz') {
         // We lack support for diagramless puzzles.
         continue;
       }

@@ -18,9 +18,9 @@ function wordRegex(squares: string[]): RegExp {
 })
 export class CharacterSearchComponent implements OnInit, OnChanges {
 
-  @Input()  word!: DisplayWord|null;
-  @Input()  searchCharacter!: string;
-  @Input()  label!: string;
+  @Input() word!: DisplayWord | null;
+  @Input() searchCharacter!: string;
+  @Input() label!: string;
   dictionaryService: DictionaryService;
 
   private candidates: string[];
@@ -37,7 +37,7 @@ export class CharacterSearchComponent implements OnInit, OnChanges {
   ngOnInit(): void {
   }
 
-  private updateWord(word: DisplayWord|null): void {
+  private updateWord(word: DisplayWord | null): void {
     if (word == null) {
       this.displayString = '';
       this.filteredCandidates = [];

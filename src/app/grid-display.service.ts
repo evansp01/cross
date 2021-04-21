@@ -1,14 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, MonoTypeOperatorFunction, Observable } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { WordInfo, Word, Value, Cursor, Location, PuzzleState, Orientation, StateService, WordPosition, Square } from './state.service';
-
-function displayWordComparitor(): MonoTypeOperatorFunction<DisplayWord|null> {
-  return distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b));
-}
 
 function wordToDisplay(word: Word, pos: WordPosition): DisplayWord {
   return {
+    location: word.squares[0].location,
     characters: word.squares.map(s => s.value == null ? ' ' : s.value.toLowerCase()),
     wordNumber: pos.word,
     cursorPosition: pos.position,
@@ -20,8 +16,8 @@ function switchOrientation(orientation: Orientation): Orientation {
   switch (orientation) {
     case Orientation.ACROSS:
       return Orientation.DOWN;
-      case Orientation.DOWN:
-        return Orientation.ACROSS;
+    case Orientation.DOWN:
+      return Orientation.ACROSS;
   }
 }
 
@@ -39,10 +35,17 @@ export interface DisplaySquare {
 }
 
 export interface DisplayWord {
+  location: Location;
   characters: string[];
   wordNumber: number;
   cursorPosition: number;
   clue: string;
+}
+
+export interface CurrentWord {
+  orientation: Orientation;
+  across: DisplayWord;
+  down: DisplayWord;
 }
 
 @Injectable({
@@ -57,10 +60,9 @@ export class GridDisplayService {
   private rows!: number;
   private columns!: number;
   private wordInfo!: WordInfo;
+  private cursor!: Cursor;
 
-  private acrossWord: BehaviorSubject<DisplayWord | null>;
-  private downWord: BehaviorSubject<DisplayWord | null>;
-  private cursor: BehaviorSubject<Cursor>;
+  private currentWord: BehaviorSubject<CurrentWord | null>;
 
   constructor(stateService: StateService) {
     this.stateService = stateService;
@@ -73,9 +75,7 @@ export class GridDisplayService {
         state: DisplayState.REGULAR
       };
     }));
-    this.acrossWord = new BehaviorSubject<DisplayWord | null>(null);
-    this.downWord = new BehaviorSubject<DisplayWord | null>(null);
-    this.cursor = new BehaviorSubject<Cursor>(state.cursor);
+    this.currentWord = new BehaviorSubject<CurrentWord | null>(null);
     this.refreshDisplayFromState(state);
     this.stateService.getState().subscribe({
       next: s => {
@@ -85,7 +85,6 @@ export class GridDisplayService {
   }
 
   private refreshDisplayFromState(state: PuzzleState): void {
-    const cursor = state.cursor;
     this.rows = state.grid.rows;
     this.columns = state.grid.columns;
     this.wordInfo = state.makeWordInfo();
@@ -99,10 +98,11 @@ export class GridDisplayService {
     this.wordInfo.downWords.forEach(w => {
       this.display[w.cursor.location.row][w.cursor.location.column].wordNumber = w.index;
     });
-    this.updateDisplayHighlighting(cursor);
+    this.updateDisplayHighlighting(state.cursor);
   }
 
   private updateDisplayHighlighting(cursor: Cursor): void {
+    this.cursor = cursor;
     this.display.forEach(row => row.forEach(square => {
       square.state = DisplayState.REGULAR;
     }));
@@ -114,43 +114,35 @@ export class GridDisplayService {
       if (acrossWord === undefined || downWord === undefined) {
         throw Error('internal state broken');
       }
-      const toHighlight = cursor.orientation === Orientation.ACROSS ? acrossWord : downWord;
-      toHighlight.squares.forEach(s => {
+      const focus = cursor.orientation === Orientation.ACROSS ? acrossWord : downWord;
+      focus.squares.forEach(s => {
         this.display[s.location.row][s.location.column].state = DisplayState.HIGHLIGHTED;
       });
-      this.acrossWord.next(wordToDisplay(acrossWord, acrossWordNum));
-      this.downWord.next(wordToDisplay(downWord, downWordNum));
+      this.currentWord.next({
+        orientation: cursor.orientation,
+        across: wordToDisplay(acrossWord, acrossWordNum),
+        down: wordToDisplay(downWord, downWordNum),
+      });
     } else {
-      this.downWord.next(null);
-      this.acrossWord.next(null);
+      this.currentWord.next(null);
     }
     this.display[cursor.location.row][cursor.location.column].state = DisplayState.FOCUS;
-    this.cursor.next(cursor);
   }
 
   private currentSquare(): Square {
-    const cursor = this.cursor.value;
-    return this.display[cursor.location.row][cursor.location.column];
+    return this.display[this.cursor.location.row][this.cursor.location.column];
   }
 
   getDisplay(): DisplaySquare[][] {
     return this.display;
   }
 
-  getAcrossWord(): Observable<DisplayWord | null> {
-    return this.acrossWord.pipe(displayWordComparitor());
-  }
-
-  getDownWord(): Observable<DisplayWord | null> {
-    return this.downWord.pipe(displayWordComparitor());
-  }
-
-  getCursor(): Observable<Cursor> {
-    return this.cursor;
+  getCurrentWord(): Observable<CurrentWord | null> {
+    return this.currentWord;
   }
 
   moveAcross(step: number): void {
-    const cursor = this.cursor.value;
+    const cursor = this.cursor;
     let column = cursor.location.column;
     if (this.currentSquare().value == null || cursor.orientation === Orientation.ACROSS) {
       if (column + step >= 0 && column + step < this.columns) {
@@ -164,14 +156,14 @@ export class GridDisplayService {
   }
 
   moveCursorToSquareOrToggle(location: Location): void {
-    let cursor = this.cursor.value;
+    let cursor = this.cursor;
     if (location === cursor.location) {
       cursor = {
         location: cursor.location,
         orientation: switchOrientation(cursor.orientation)
       };
     } else {
-      cursor = {location, orientation: cursor.orientation};
+      cursor = { location, orientation: cursor.orientation };
     }
     this.updateDisplayHighlighting(cursor);
   }
@@ -181,7 +173,7 @@ export class GridDisplayService {
   }
 
   moveDown(step: number): void {
-    const cursor = this.cursor.value;
+    const cursor = this.cursor;
     let row = cursor.location.row;
     if (this.currentSquare().value == null || cursor.orientation === Orientation.DOWN) {
       if (row + step >= 0 && row + step < this.rows) {
@@ -195,7 +187,7 @@ export class GridDisplayService {
   }
 
   mutateAndStep(value: Value, step: number): void {
-    const cursor = this.cursor.value;
+    const cursor = this.cursor;
     this.stateService.setSquare(cursor, value);
     if (cursor.orientation === Orientation.ACROSS) {
       this.moveAcross(step);

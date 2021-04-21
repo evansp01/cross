@@ -51,14 +51,14 @@ export class SuggestionsComponent implements OnInit {
     }
   }
 
-  private resetCharacter(word: DisplayWord | null): void {
-    if (word == null) {
-      this.searchStringForm.setValue('');
-      this.searchStringForm.disable({ onlySelf: true });
-      return;
-    }
-    this.searchStringForm.setValue(word.characters[word.cursorPosition]);
-    if (word.characters[word.cursorPosition] === '') {
+  private clearSearchCharacter(): void {
+    this.searchStringForm.setValue('');
+    this.searchStringForm.disable({ onlySelf: true });
+  }
+
+  private setSearchCharacter(character: string): void {
+    this.searchStringForm.setValue(character);
+    if (character === '') {
       this.searchStringForm.enable({ onlySelf: true });
     } else {
       this.searchStringForm.disable({ onlySelf: true });
@@ -66,16 +66,15 @@ export class SuggestionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.gridDisplay.getAcrossWord().subscribe({
-      next: w => {
-        this.acrossWord = w;
-        this.resetCharacter(w);
-      }
-    });
-    this.gridDisplay.getDownWord().subscribe({
-      next: w => {
-        this.downWord = w;
-        this.resetCharacter(w);
+    this.gridDisplay.getCurrentWord().subscribe({
+      next: (w) => {
+        this.acrossWord = w === null ? null : w.across;
+        this.downWord = w === null ? null : w.down;
+        if (w !== null) {
+          this.setSearchCharacter(w.across.characters[w.across.cursorPosition]);
+        } else {
+          this.clearSearchCharacter();
+        }
       }
     });
   }

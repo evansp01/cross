@@ -1,0 +1,23 @@
+<div class="d-flex flex-column mh-100">
+    <ul ngbNav #nav="ngbNav" class="nav-tabs">
+        <li [ngbNavItem]="1">
+            <a ngbNavLink>Fill</a>
+            <ng-template ngbNavContent>
+                <app-suggestions></app-suggestions>
+            </ng-template>
+        </li>
+        <li [ngbNavItem]="2">
+            <a ngbNavLink>Clues</a>
+            <ng-template ngbNavContent>
+                <app-clues></app-clues>
+            </ng-template>
+        </li>
+        <li [ngbNavItem]="3">
+            <a ngbNavLink>Search</a>
+            <ng-template ngbNavContent>
+                <app-word-search></app-word-search>
+            </ng-template>
+        </li>
+    </ul>
+    <div class="flex-fill overflow-auto" style="min-height: 0px;" [ngbNavOutlet]="nav"></div>
+</div>

@@ -211,7 +211,7 @@ export class PuzzleState {
     return new PuzzleState(
       grid, clues,
       { location: { row: 0, column: 0 }, orientation: Orientation.ACROSS },
-      { title: '', author: '', copyright: '', notes: ''});
+      { title: '', author: '', copyright: '', notes: '' });
   }
 
   private constructor(grid: Grid, existingClues: ClueSet, cursor: Cursor, data: Data) {

@@ -2,11 +2,12 @@
   <input class="form-control form-control-sm col-sm-3 shadow-none" type="text" [formControl]="searchStringForm">
   <button class="btn btn-sm btn-light shadow-none" (click)="setVowel()">Vowels</button>
   <button class="btn btn-sm btn-light shadow-none" (click)="setConsonant()">Consonants</button>
-  <small class="text-danger"
-   *ngIf="searchStringForm.invalid && (searchStringForm.dirty || searchStringForm.touched)">
+  <small class="text-danger" *ngIf="searchStringForm.invalid && (searchStringForm.dirty || searchStringForm.touched)">
     &nbsp;The regex {{searchStringForm.value}} is invalid.
   </small>
 </div>
 
-<app-character-search label="Across Word" [word]="acrossWord" [searchCharacter]="searchStringForm.value"></app-character-search>
-<app-character-search label="Down Word" [word]="downWord" [searchCharacter]="searchStringForm.value"></app-character-search>
+<app-character-search label="Across Word" [word]="acrossWord" [searchCharacter]="searchStringForm.value">
+</app-character-search>
+<app-character-search label="Down Word" [word]="downWord" [searchCharacter]="searchStringForm.value">
+</app-character-search>

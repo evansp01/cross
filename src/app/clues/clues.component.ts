@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GridDisplayService } from '../grid-display.service';
-import { Clue, Cursor, Orientation, Square, StateService, Word } from '../state.service';
+import { Cursor, Orientation, PuzzleState, Square, StateService, Word } from '../state.service';
 
 interface DisplayClue {
   index: number;
@@ -8,10 +8,11 @@ interface DisplayClue {
   clue: string;
   clean: string;
   cursor: Cursor;
+  focus: boolean;
 }
 
 function wordToDisplayClue(word: Word): DisplayClue {
-  const text =  word.squares.map((s: Square) => {
+  const text = word.squares.map((s: Square) => {
     if (s.value === '') {
       return '_';
     } else {
@@ -24,7 +25,20 @@ function wordToDisplayClue(word: Word): DisplayClue {
     clean: word.clue.value,
     word: text,
     cursor: word.clue.cursor,
+    focus: false,
   };
+}
+
+function cursorEqual(c1: Cursor | null, c2: Cursor | null): boolean {
+  if (c1 === c2) {
+    return true;
+  } else if (c1 === null || c2 === null) {
+    return false;
+  } else {
+    return c1.orientation === c2.orientation &&
+      c1.location.row === c2.location.row &&
+      c1.location.column === c2.location.column;
+  }
 }
 
 @Component({
@@ -38,43 +52,95 @@ export class CluesComponent implements OnInit {
 
   acrossClues: Array<DisplayClue>;
   downClues: Array<DisplayClue>;
+  focusedClueCursor: Cursor | null;
 
   constructor(stateService: StateService, gridDisplay: GridDisplayService) {
     this.stateService = stateService;
     this.gridDisplay = gridDisplay;
     this.acrossClues = [];
     this.downClues = [];
+    this.focusedClueCursor = null;
+  }
+
+  ngOnInit(): void {
+    this.stateService.getState().subscribe({ next: (n) => this.updateCluesFromState(n) });
+    this.gridDisplay.getCurrentWord().subscribe(
+      {
+        next: (n) => {
+          if (n === null) {
+            this.updateHighlightingFromCursor(null);
+          } else if (n.orientation === Orientation.ACROSS) {
+            this.updateHighlightingFromCursor({ location: n.across.location, orientation: n.orientation });
+          } else if (n.orientation === Orientation.DOWN) {
+            this.updateHighlightingFromCursor({ location: n.down.location, orientation: n.orientation });
+          }
+        }
+      });
   }
 
   commitClue(clue: DisplayClue): void {
     console.log(clue);
-    if (clue.clue !== clue.clean) {
-      // Make sure no newlines or leading/trailing whitespace sneaks into the clues.
-      const cleaned = clue.clue.replace(/[\r\n]|/g, ' ').trim();
+    // Make sure no newlines or leading/trailing whitespace sneaks into the clues.
+    const cleaned = clue.clue.replace(/[\r\n]|/g, '').trim();
+    if (clue.clue !== cleaned) {
       this.stateService.setClue(clue.cursor, cleaned);
     }
   }
 
   selectClue(clue: DisplayClue): void {
+    if (!cursorEqual(this.focusedClueCursor, clue.cursor)) {
+      // Highlight the clue before updating the grid display's cursor.
+      // This allows us to avoid recentering the clue list when the change
+      // in highlighting was prompted by a user action in the clue list.
+      this.highlightClue(clue.cursor);
       this.gridDisplay.moveCursor(clue.cursor);
+    }
   }
 
-  ngOnInit(): void {
-    this.stateService.getState().subscribe({next: (s) => {
-      const info = s.makeWordInfo();
-      const acrossClues: DisplayClue[] = [];
-      const downClues: DisplayClue[] = [];
-      info.acrossWords.forEach(w => acrossClues.push(wordToDisplayClue(w)));
-      info.downWords.forEach(w => downClues.push(wordToDisplayClue(w)));
-      acrossClues.sort((a, b) => a.index - b.index);
-      downClues.sort((a, b) => a.index - b.index);
-      this.acrossClues = acrossClues;
-      this.downClues = downClues;
-    }});
+  highlightClue(cursor: Cursor | null): void {
+    this.acrossClues.forEach(c => { c.focus = cursorEqual(c.cursor, cursor); });
+    this.downClues.forEach(c => { c.focus = cursorEqual(c.cursor, cursor); });
+    this.focusedClueCursor = cursor;
   }
 
-  trackByCursor(index: number, clue: DisplayClue): string {
-    return '{clue.cursor.location.row}-{clue.cursor.location.column}-{clue.cursor.orientation}';
+  updateHighlightingFromCursor(cursor: Cursor | null): void {
+    if (!cursorEqual(this.focusedClueCursor, cursor)) {
+      this.highlightClue(cursor);
+      if (cursor != null) {
+        console.log("recentering event");
+        let id = `${cursor.location.row}-${cursor.location.column}-${cursor.orientation}`;
+        console.log(id);
+        let elem = document.getElementById(id);
+        console.log(elem);
+        elem?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }
+
+  updateCluesFromState(state: PuzzleState): void {
+    const info = state.makeWordInfo();
+    const acrossClues: DisplayClue[] = [];
+    const downClues: DisplayClue[] = [];
+    info.acrossWords.forEach(w => {
+      const clue = wordToDisplayClue(w);
+      acrossClues.push(clue);
+    });
+    info.downWords.forEach(w => {
+      const clue = wordToDisplayClue(w);
+      downClues.push(clue);
+    });
+    acrossClues.sort((a, b) => a.index - b.index);
+    downClues.sort((a, b) => a.index - b.index);
+    this.acrossClues = acrossClues;
+    this.downClues = downClues;
+
+    this.updateHighlightingFromCursor(state.cursor);
+  }
+
+  trackByCursor(_index: number, clue: DisplayClue): string {
+    return `${clue.cursor.location.row}-` +
+      `${clue.cursor.location.column}-` +
+      `${clue.cursor.orientation}-${clue.focus}`;
   }
 
 }
