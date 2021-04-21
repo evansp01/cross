@@ -1,9 +1,10 @@
 <div class="form-inline">
-  <input class="form-control form-control-sm col-sm-3 shadow-none" type="text" [formControl]="searchStringForm">
+  <input class="form-control form-control-sm col-sm-3 shadow-none" placeholder="letter regex" type="text"
+    [formControl]="searchStringForm">
   <button class="btn btn-sm btn-light shadow-none" (click)="setVowel()">Vowels</button>
   <button class="btn btn-sm btn-light shadow-none" (click)="setConsonant()">Consonants</button>
   <small class="text-danger" *ngIf="searchStringForm.invalid && (searchStringForm.dirty || searchStringForm.touched)">
-    &nbsp;The regex {{searchStringForm.value}} is invalid.
+    &nbsp;invalid regex
   </small>
 </div>
 

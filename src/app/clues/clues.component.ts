@@ -70,18 +70,17 @@ export class CluesComponent implements OnInit {
 
   ngOnInit(): void {
     this.stateService.getState().subscribe({ next: (n) => this.updateCluesFromState(n) });
-    this.gridDisplay.getCurrentWord().subscribe(
-      {
-        next: (n) => {
-          if (n === null) {
-            this.updateHighlightingFromCursor(null);
-          } else if (n.orientation === Orientation.ACROSS) {
-            this.updateHighlightingFromCursor({ location: n.across.location, orientation: n.orientation });
-          } else if (n.orientation === Orientation.DOWN) {
-            this.updateHighlightingFromCursor({ location: n.down.location, orientation: n.orientation });
-          }
+    this.gridDisplay.getCurrentWord().subscribe({
+      next: (n) => {
+        if (n === null) {
+          this.updateHighlightingFromCursor(null);
+        } else if (n.orientation === Orientation.ACROSS) {
+          this.updateHighlightingFromCursor({ location: n.across.location, orientation: n.orientation });
+        } else if (n.orientation === Orientation.DOWN) {
+          this.updateHighlightingFromCursor({ location: n.down.location, orientation: n.orientation });
         }
-      });
+      }
+    });
   }
 
   commitClue(clue: DisplayClue): void {
