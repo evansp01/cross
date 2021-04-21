@@ -38,9 +38,14 @@ export class WordSearchComponent implements OnInit {
     this.words = this.dictionaryService.getMatches(new RegExp('.'));
     this.searchStringForm.valueChanges.subscribe({
       next: (v: string) => {
-        this.words = this.dictionaryService.getMatches(new RegExp(v));
+        try {
+          const regex = new RegExp(v, 'i');
+          this.words = this.dictionaryService.getMatches(regex);
+        } catch (e) {
+          this.words = [];
+        }
       }
-    })
+    });
   }
 
 }
