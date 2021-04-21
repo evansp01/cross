@@ -4,11 +4,10 @@
       <td colspan="3">Across Clues</td>
     </tr>
     <ng-container *ngFor="let clue of acrossClues trackBy: trackByCursor">
-      <tr [class.active]="clue.focus"
-        id="{{clue.cursor.location.row}}-{{clue.cursor.location.column}}-{{clue.cursor.orientation}}" tabindex="0"
-        (focusin)="selectClue(clue)" (focusout)="commitClue(clue)">
+      <tr [class.active]="clue.focus" [id]="clue.id" tabindex="0" (focusin)="selectClue(clue)"
+        (focusout)="commitClue(clue)">
         <td>
-          <div>{{clue.index}}A. {{clue.focus}}</div>
+          <div>{{clue.index}}A.</div>
         </td>
         <td>{{clue.word}}</td>
         <td style="min-width: 200px;">
@@ -21,11 +20,10 @@
       <td colspan="3">Down Clues</td>
     </tr>
     <ng-container *ngFor="let clue of downClues trackBy: trackByCursor">
-      <tr [class.active]="clue.focus"
-        id="{{clue.cursor.location.row}}-{{clue.cursor.location.column}}-{{clue.cursor.orientation}}" tabindex="0"
-        (focusin)="selectClue(clue)" (focusout)="commitClue(clue)">
+      <tr [class.active]="clue.focus" [id]="clue.id" tabindex="0" (focusin)="selectClue(clue)"
+        (focusout)="commitClue(clue)">
         <td>
-          <div>{{clue.index}}D. {{clue.focus}}</div>
+          <div>{{clue.index}}D.</div>
         </td>
         <td>{{clue.word}}</td>
         <td style="min-width: 200px;">

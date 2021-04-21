@@ -3,6 +3,7 @@ import { GridDisplayService } from '../grid-display.service';
 import { Cursor, Orientation, PuzzleState, Square, StateService, Word } from '../state.service';
 
 interface DisplayClue {
+  id: string;
   index: number;
   word: string;
   clue: string;
@@ -20,6 +21,7 @@ function wordToDisplayClue(word: Word): DisplayClue {
     }
   }).join('');
   return {
+    id: cursorString(word.clue.cursor),
     index: word.index,
     clue: word.clue.value,
     clean: word.clue.value,
@@ -27,6 +29,10 @@ function wordToDisplayClue(word: Word): DisplayClue {
     cursor: word.clue.cursor,
     focus: false,
   };
+}
+
+function cursorString(c: Cursor): string {
+  return `${c.location.row}-${c.location.column}-${c.orientation}`;
 }
 
 function cursorEqual(c1: Cursor | null, c2: Cursor | null): boolean {
@@ -107,11 +113,7 @@ export class CluesComponent implements OnInit {
     if (!cursorEqual(this.focusedClueCursor, cursor)) {
       this.highlightClue(cursor);
       if (cursor != null) {
-        console.log("recentering event");
-        let id = `${cursor.location.row}-${cursor.location.column}-${cursor.orientation}`;
-        console.log(id);
-        let elem = document.getElementById(id);
-        console.log(elem);
+        const elem = document.getElementById(cursorString(cursor));
         elem?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }
@@ -138,9 +140,7 @@ export class CluesComponent implements OnInit {
   }
 
   trackByCursor(_index: number, clue: DisplayClue): string {
-    return `${clue.cursor.location.row}-` +
-      `${clue.cursor.location.column}-` +
-      `${clue.cursor.orientation}-${clue.focus}`;
+    return `${clue.id}-${clue.focus}`;
   }
 
 }
