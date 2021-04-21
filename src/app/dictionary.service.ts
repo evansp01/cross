@@ -8,16 +8,19 @@ const data: string[] = require('./words.json').data.split(' ');
 export class DictionaryService {
   // Words by length
   wordsDict: Map<number, string[]>;
+  dict: string[];
 
   constructor() {
     this.wordsDict = new Map();
+    this.dict = [];
     this.setDictionary(data);
 
   }
 
   setDictionary(dict: string[]): void {
+    this.dict = dict.sort();
     this.wordsDict = new Map();
-    dict.forEach(w => {
+    this.dict.forEach(w => {
       let list = this.wordsDict.get(w.length);
       if (list === undefined) {
         list = [];
@@ -34,5 +37,9 @@ export class DictionaryService {
       return [];
     }
     return words.filter(w => regex.test(w));
+  }
+
+  getMatches(regex: RegExp): string[] {
+    return this.dict.filter(w => regex.test(w));
   }
 }
