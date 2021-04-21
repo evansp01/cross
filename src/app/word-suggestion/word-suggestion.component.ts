@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
-import { DictionaryService } from '../dictionary.service';
-import { DisplayWord, GridDisplayService } from '../grid-display.service';
+import { DictionaryService } from '../core/dictionary.service';
+import { DisplayWord, DisplayStateService } from '../core/display-state.service';
 
 export function invalidRegexValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -17,19 +17,19 @@ export function invalidRegexValidator(): ValidatorFn {
 }
 
 @Component({
-  selector: 'app-suggestions',
-  templateUrl: './suggestions.component.html',
-  styleUrls: ['./suggestions.component.css'],
+  selector: 'app-word-suggestion',
+  templateUrl: './word-suggestion.component.html',
+  styleUrls: ['./word-suggestion.component.css'],
 })
-export class SuggestionsComponent implements OnInit {
+export class WordSuggestionComponent implements OnInit {
   dictionaryService: DictionaryService;
-  gridDisplay: GridDisplayService;
+  gridDisplay: DisplayStateService;
 
   acrossWord: DisplayWord | null;
   downWord: DisplayWord | null;
   searchStringForm: FormControl;
 
-  constructor(dictionary: DictionaryService, gridDisplay: GridDisplayService) {
+  constructor(dictionary: DictionaryService, gridDisplay: DisplayStateService) {
     this.dictionaryService = dictionary;
     this.gridDisplay = gridDisplay;
     this.acrossWord = null;

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, ValidatorFn } from '@angular/forms';
-import { DictionaryService } from '../dictionary.service';
+import { DictionaryService } from '../core/dictionary.service';
 
 export function invalidRegexValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -16,11 +16,11 @@ export function invalidRegexValidator(): ValidatorFn {
 }
 
 @Component({
-  selector: 'app-word-search',
-  templateUrl: './word-search.component.html',
-  styleUrls: ['./word-search.component.css']
+  selector: 'app-dictionary-search',
+  templateUrl: './dictionary-search.component.html',
+  styleUrls: ['./dictionary-search.component.css']
 })
-export class WordSearchComponent implements OnInit {
+export class DictionarySearchComponent implements OnInit {
 
   dictionaryService: DictionaryService;
   searchStringForm: FormControl;

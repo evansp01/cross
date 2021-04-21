@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { DictionaryService } from '../dictionary.service';
-import { DisplayWord } from '../grid-display.service';
+import { DictionaryService } from '../../core/dictionary.service';
+import { DisplayWord } from '../../core/display-state.service';
 
 function displayString(squares: string[]): string {
   return squares.map(s => s === '' ? '_' : s).join('');
@@ -12,11 +12,11 @@ function wordRegex(squares: string[]): RegExp {
 }
 
 @Component({
-  selector: 'app-character-search',
-  templateUrl: './character-search.component.html',
-  styleUrls: ['./character-search.component.css']
+  selector: 'app-candidate-display',
+  templateUrl: './candidate-display.component.html',
+  styleUrls: ['./candidate-display.component.css']
 })
-export class CharacterSearchComponent implements OnInit, OnChanges {
+export class CandidateDisplayComponent implements OnInit, OnChanges {
 
   @Input() word!: DisplayWord | null;
   @Input() searchCharacter!: string;

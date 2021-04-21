@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { WordInfo, Word, Value, Cursor, Location, PuzzleState, Orientation, StateService, WordPosition, Square } from './state.service';
+import { WordInfo, Word, Value, Cursor, Location, PuzzleState, Orientation, PuzzleStateService, WordPosition, Square } from './puzzle-state.service';
 
 function wordToDisplay(word: Word, pos: WordPosition): DisplayWord {
   return {
@@ -51,10 +51,10 @@ export interface CurrentWord {
 @Injectable({
   providedIn: 'root'
 })
-export class GridDisplayService {
+export class DisplayStateService {
   displayState = DisplayState;
 
-  private stateService: StateService;
+  private PuzzleStateService: PuzzleStateService;
   private display: DisplaySquare[][];
 
   private rows!: number;
@@ -64,9 +64,9 @@ export class GridDisplayService {
 
   private currentWord: BehaviorSubject<CurrentWord | null>;
 
-  constructor(stateService: StateService) {
-    this.stateService = stateService;
-    const state = stateService.getState().value;
+  constructor(puzzleStateService: PuzzleStateService) {
+    this.PuzzleStateService = puzzleStateService;
+    const state = puzzleStateService.getState().value;
     this.display = state.grid.squares.map(row => row.map(square => {
       return {
         location: square.location,
@@ -77,7 +77,7 @@ export class GridDisplayService {
     }));
     this.currentWord = new BehaviorSubject<CurrentWord | null>(null);
     this.refreshDisplayFromState(state);
-    this.stateService.getState().subscribe({
+    this.PuzzleStateService.getState().subscribe({
       next: s => {
         this.refreshDisplayFromState(s);
       },
@@ -188,7 +188,7 @@ export class GridDisplayService {
 
   mutateAndStep(value: Value, step: number): void {
     const cursor = this.cursor;
-    this.stateService.setSquare(cursor, value);
+    this.PuzzleStateService.setSquare(cursor, value);
     if (cursor.orientation === Orientation.ACROSS) {
       this.moveAcross(step);
     }

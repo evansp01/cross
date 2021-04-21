@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Grid, Orientation, PuzzleState, Value } from './state.service';
+import { Grid, Orientation, PuzzleState, Value } from './puzzle-state.service';
 
 class PuzzBuffer {
   // Note that one character maps to one byte
@@ -340,7 +340,7 @@ function valueToString(value: Value): string {
 @Injectable({
   providedIn: 'root'
 })
-export class PuzzService {
+export class SerializationService {
 
   constructor() { }
 

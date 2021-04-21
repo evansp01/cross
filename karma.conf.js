@@ -13,7 +13,7 @@ module.exports = function (config) {
       require('@angular-devkit/build-angular/plugins/karma')
     ],
     files: [
-      { pattern: 'src/app/testdata/*', included:false, watched:false, served:true}
+      { pattern: 'testdata/*', included: false, watched: false, served: true }
     ],
     client: {
       jasmine: {

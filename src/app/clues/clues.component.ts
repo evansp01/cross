@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { GridDisplayService } from '../grid-display.service';
-import { Cursor, Orientation, PuzzleState, Square, StateService, Word } from '../state.service';
+import { DisplayStateService } from '../core/display-state.service';
+import { Cursor, Orientation, PuzzleState, Square, PuzzleStateService, Word } from '../core/puzzle-state.service';
 
 interface DisplayClue {
   id: string;
@@ -53,15 +53,15 @@ function cursorEqual(c1: Cursor | null, c2: Cursor | null): boolean {
   styleUrls: ['./clues.component.css'],
 })
 export class CluesComponent implements OnInit {
-  private stateService: StateService;
-  private gridDisplay: GridDisplayService;
+  private puzzleStateService: PuzzleStateService;
+  private gridDisplay: DisplayStateService;
 
   acrossClues: Array<DisplayClue>;
   downClues: Array<DisplayClue>;
   focusedClueCursor: Cursor | null;
 
-  constructor(stateService: StateService, gridDisplay: GridDisplayService) {
-    this.stateService = stateService;
+  constructor(puzzleStateService: PuzzleStateService, gridDisplay: DisplayStateService) {
+    this.puzzleStateService = puzzleStateService;
     this.gridDisplay = gridDisplay;
     this.acrossClues = [];
     this.downClues = [];
@@ -69,7 +69,7 @@ export class CluesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.stateService.getState().subscribe({ next: (n) => this.updateCluesFromState(n) });
+    this.puzzleStateService.getState().subscribe({ next: (n) => this.updateCluesFromState(n) });
     this.gridDisplay.getCurrentWord().subscribe({
       next: (n) => {
         if (n === null) {
@@ -88,7 +88,7 @@ export class CluesComponent implements OnInit {
     // Make sure no newlines or leading/trailing whitespace sneaks into the clues.
     const cleaned = clue.clue.replace(/[\r\n]|/g, '').trim();
     if (clue.clue !== cleaned) {
-      this.stateService.setClue(clue.cursor, cleaned);
+      this.puzzleStateService.setClue(clue.cursor, cleaned);
     }
   }
 

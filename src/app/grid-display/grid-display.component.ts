@@ -1,20 +1,20 @@
-import { Component, OnInit, HostListener } from '@angular/core';
-import { DisplaySquare, GridDisplayService } from '../grid-display.service';
-import { StateService } from '../state.service';
+import { Component, OnInit } from '@angular/core';
+import { DisplaySquare, DisplayStateService } from '../core/display-state.service';
+import { PuzzleStateService } from '../core/puzzle-state.service';
 
 @Component({
-  selector: 'app-grid',
-  templateUrl: './grid.component.html',
-  styleUrls: ['./grid.component.css']
+  selector: 'app-grid-display',
+  templateUrl: './grid-display.component.html',
+  styleUrls: ['./grid-display.component.css']
 })
-export class GridComponent implements OnInit {
+export class GridDisplayComponent implements OnInit {
   title = 'cross';
-  grid: GridDisplayService;
-  state: StateService;
+  grid: DisplayStateService;
+  state: PuzzleStateService;
 
-  constructor(gridDisplay: GridDisplayService, stateService: StateService) {
+  constructor(gridDisplay: DisplayStateService, puzzleStateService: PuzzleStateService) {
     this.grid = gridDisplay;
-    this.state = stateService;
+    this.state = puzzleStateService;
   }
 
   ngOnInit(): void {

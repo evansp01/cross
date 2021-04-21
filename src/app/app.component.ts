@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { PuzzService } from './puzz.service';
-import { StateService } from './state.service';
+import { SerializationService } from './core/serialization.service';
+import { PuzzleStateService } from './core/puzzle-state.service';
 import { saveAs } from 'file-saver';
 
 @Component({
@@ -11,12 +11,12 @@ import { saveAs } from 'file-saver';
 export class AppComponent {
   title = 'cross';
 
-  private puzzService: PuzzService;
-  private stateService: StateService;
+  private SerializationService: SerializationService;
+  private PuzzleStateService: PuzzleStateService;
 
-  constructor(puzzService: PuzzService, stateService: StateService) {
-    this.puzzService = puzzService;
-    this.stateService = stateService;
+  constructor(serializationService: SerializationService, puzzleStateService: PuzzleStateService) {
+    this.SerializationService = serializationService;
+    this.PuzzleStateService = puzzleStateService;
   }
 
   handleFileInput(event: Event): void {
@@ -24,8 +24,8 @@ export class AppComponent {
     const file = target.files?.item(0);
     if (file) {
       file.arrayBuffer().then((buffer) => {
-        const state = this.puzzService.puzzleStateFromPuz(new Uint8Array(buffer));
-        this.stateService.setState(state);
+        const state = this.SerializationService.puzzleStateFromPuz(new Uint8Array(buffer));
+        this.PuzzleStateService.setState(state);
         console.log(state.grid);
         // Reset the file input
         target.value = '';
@@ -34,7 +34,7 @@ export class AppComponent {
   }
 
   saveToFile(): void {
-    const buf = this.puzzService.puzFromPuzzleState(this.stateService.getState().value);
+    const buf = this.SerializationService.puzFromPuzzleState(this.PuzzleStateService.getState().value);
     saveAs(new Blob([buf]), 'crossword.puz');
   }
 }

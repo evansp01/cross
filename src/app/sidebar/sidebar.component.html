@@ -1,10 +1,10 @@
 <div class="d-flex flex-column mh-100">
-    <div class="navbar navbar-ligth bg-light">
+    <div class="navbar navbar-light bg-light">
         <ul ngbNav #nav="ngbNav" class="nav-tabs mr-auto">
             <li [ngbNavItem]="1" class="nav-item">
                 <a ngbNavLink>Fill</a>
                 <ng-template ngbNavContent>
-                    <app-suggestions></app-suggestions>
+                    <app-word-suggestion></app-word-suggestion>
                 </ng-template>
             </li>
             <li [ngbNavItem]="2" class="nav-item">
@@ -16,7 +16,7 @@
             <li [ngbNavItem]="3" class="nav-item">
                 <a ngbNavLink>Search</a>
                 <ng-template ngbNavContent>
-                    <app-word-search></app-word-search>
+                    <app-dictionary-search></app-dictionary-search>
                 </ng-template>
             </li>
         </ul>

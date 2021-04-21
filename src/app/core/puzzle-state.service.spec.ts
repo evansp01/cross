@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { GridDisplayService } from './grid-display.service';
+import { PuzzleStateService } from './puzzle-state.service';
 
-describe('GridDisplayService', () => {
-  let service: GridDisplayService;
+describe('PuzzleStateService', () => {
+  let service: PuzzleStateService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(GridDisplayService);
+    service = TestBed.inject(PuzzleStateService);
   });
 
   it('should be created', () => {

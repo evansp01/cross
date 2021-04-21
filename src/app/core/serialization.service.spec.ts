@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PuzzService, Puzz } from './puzz.service';
+import { SerializationService, Puzz } from './serialization.service';
 
 function createRequest(filePath: string): Promise<Uint8Array> {
   return new Promise((resolve, reject) => {
@@ -13,28 +13,28 @@ function createRequest(filePath: string): Promise<Uint8Array> {
   });
 }
 
-describe('PuzzService', () => {
-  let service: PuzzService;
+describe('SerializationService', () => {
+  let service: SerializationService;
   const filesList = [
-    'src/app/testdata/washpost.puz',
-    'src/app/testdata/Feb0308_oddnumbering.puz',
-    'src/app/testdata/nyt_diagramless.puz',
-    'src/app/testdata/nyt_rebus_with_notes_and_shape.puz',
-    'src/app/testdata/nyt_with_shape.puz',
-    'src/app/testdata/av110622.puz',
-    'src/app/testdata/nyt_locked.puz',
-    'src/app/testdata/nyt_sun_rebus.puz',
-    'src/app/testdata/washpost.puz',
-    'src/app/testdata/cs080904.puz',
-    'src/app/testdata/nyt_partlyfilled.puz',
-    'src/app/testdata/nyt_weekday_with_notes.puz',
-    'src/app/testdata/wsj110624.puz',
+    'testdata/washpost.puz',
+    'testdata/Feb0308_oddnumbering.puz',
+    'testdata/nyt_diagramless.puz',
+    'testdata/nyt_rebus_with_notes_and_shape.puz',
+    'testdata/nyt_with_shape.puz',
+    'testdata/av110622.puz',
+    'testdata/nyt_locked.puz',
+    'testdata/nyt_sun_rebus.puz',
+    'testdata/washpost.puz',
+    'testdata/cs080904.puz',
+    'testdata/nyt_partlyfilled.puz',
+    'testdata/nyt_weekday_with_notes.puz',
+    'testdata/wsj110624.puz',
   ];
   const files: Map<string, Uint8Array> = new Map();
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(PuzzService);
+    service = TestBed.inject(SerializationService);
   });
   beforeAll((done) => {
     const requests = filesList.map(async f => {
@@ -56,7 +56,7 @@ describe('PuzzService', () => {
 
   it('should roundtrip files to PuzzleState', () => {
     for (const fileName of filesList) {
-      if (fileName === 'src/app/testdata/nyt_diagramless.puz') {
+      if (fileName === 'testdata/nyt_diagramless.puz') {
         // We lack support for diagramless puzzles.
         continue;
       }
