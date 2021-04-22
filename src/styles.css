@@ -23,12 +23,20 @@ div.tab-content div.tab-pane {
 /* Works on Firefox */
 * {
     scrollbar-width: thin;
-  }
+}
   
   /* Works on Chrome, Edge, and Safari */
-  *::-webkit-scrollbar {
-    width: 12px;
-  }
+* ::-webkit-scrollbar {
+  width: 8px;
+  background-color: #f0f0f0;
+}
+
+::-webkit-scrollbar-thumb {
+  width: 8px;
+  border: 1px solid transparent;
+  background: #cdcdcd;
+  background-clip: content-box;
+}
   
   
   
