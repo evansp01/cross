@@ -14,7 +14,6 @@ export class DictionaryService {
     this.wordsDict = new Map();
     this.dict = [];
     this.setDictionary(data);
-
   }
 
   setDictionary(dict: string[]): void {

@@ -3,6 +3,7 @@ import { SerializationService } from '../core/serialization.service';
 import { PuzzleStateService } from '../core/puzzle-state.service';
 import { saveAs } from 'file-saver';
 import { NgbNav } from '@ng-bootstrap/ng-bootstrap';
+import { DictionaryService } from '../core/dictionary.service';
 
 @Component({
   selector: 'app-menubar',
@@ -13,10 +14,12 @@ export class MenubarComponent implements OnInit {
   @ViewChild('nav') tab!: NgbNav;
   private serializationService: SerializationService;
   private puzzleStateService: PuzzleStateService;
+  private dictionaryService: DictionaryService;
 
-  constructor(serializationService: SerializationService, puzzleStateService: PuzzleStateService) {
+  constructor(serializationService: SerializationService, puzzleStateService: PuzzleStateService, dictionaryService: DictionaryService) {
     this.serializationService = serializationService;
     this.puzzleStateService = puzzleStateService;
+    this.dictionaryService = dictionaryService;
   }
 
   ngOnInit(): void {
@@ -32,6 +35,16 @@ export class MenubarComponent implements OnInit {
         console.log(state.grid);
         // Reset the file input
         target.value = '';
+      });
+    }
+  }
+
+  handleDictUpload(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.item(0);
+    if (file) {
+      file.text().then((text) => {
+        this.dictionaryService.setDictionary(text.split(/\s+/));
       });
     }
   }
