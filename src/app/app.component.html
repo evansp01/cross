@@ -1,6 +1,6 @@
 <div class="container-fluid d-flex flex-column vh-100">
   <div class="row flex-fill no-gutters" style="min-height: 0px;">
-    <div class="col-lg mh-100">
+    <div class="col-md mh-100">
       <div class="d-flex flex-column mh-100">
         <app-menubar></app-menubar>
         <div class="flex-fill" style="min-height: 0px;">
@@ -8,8 +8,11 @@
         </div>
       </div>
     </div>
-    <div class="col-lg mh-100">
-      <app-sidebar></app-sidebar>
+    <div class="col-md mh-100">
+      <div class="d-flex flex-column mh-100">
+        <app-sidebar #sidebar></app-sidebar>
+        <div class="flex-fill overflow-auto" style="min-height: 0px;" [ngbNavOutlet]="sidebar.nav"></div>
+      </div>
     </div>
   </div>
 </div>

@@ -1,25 +1,22 @@
-<div class="d-flex flex-column mh-100">
-    <div class="navbar navbar-light bg-light">
-        <ul ngbNav #nav="ngbNav" class="nav nav-tabs mr-auto">
-            <li [ngbNavItem]="1" class="nav-item">
-                <a ngbNavLink>Fill</a>
-                <ng-template ngbNavContent>
-                    <app-word-suggestion></app-word-suggestion>
-                </ng-template>
-            </li>
-            <li [ngbNavItem]="2" class="nav-item">
-                <a ngbNavLink>Clues</a>
-                <ng-template ngbNavContent>
-                    <app-clues></app-clues>
-                </ng-template>
-            </li>
-            <li [ngbNavItem]="3" class="nav-item">
-                <a ngbNavLink>Search</a>
-                <ng-template ngbNavContent>
-                    <app-dictionary-search></app-dictionary-search>
-                </ng-template>
-            </li>
-        </ul>
-    </div>
-    <div class="flex-fill overflow-auto" style="min-height: 0px;" [ngbNavOutlet]="nav"></div>
+<div class="navbar navbar-light bg-light">
+    <ul ngbNav #nav="ngbNav" class="nav nav-tabs mr-auto">
+        <li [ngbNavItem]="1" class="nav-item">
+            <a ngbNavLink>Fill</a>
+            <ng-template ngbNavContent>
+                <app-word-suggestion></app-word-suggestion>
+            </ng-template>
+        </li>
+        <li [ngbNavItem]="2" class="nav-item">
+            <a ngbNavLink>Clues</a>
+            <ng-template ngbNavContent>
+                <app-clues></app-clues>
+            </ng-template>
+        </li>
+        <li [ngbNavItem]="3" class="nav-item">
+            <a ngbNavLink>Search</a>
+            <ng-template ngbNavContent>
+                <app-dictionary-search></app-dictionary-search>
+            </ng-template>
+        </li>
+    </ul>
 </div>
