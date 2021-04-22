@@ -7,7 +7,7 @@
         height="40" style="stroke-width: 1; stroke: rgb(55,55,55); fill:rgb(0,0,0);"></rect>
       <rect (click)="clicked(square)" *ngIf="square.value == null && square.state == grid.displayState.FOCUS"
         class="blackbox" [attr.x]="1 + square.location.column * 40" [attr.y]="1 + square.location.row * 40" width="40"
-        height="40" style="stroke-width: 1; stroke: rgb(55,55,55); fill:rgb(60, 20, 68);"></rect>
+        height="40" style="stroke-width: 1; stroke: rgb(55,55,55); fill:rgb(90, 30, 90);"></rect>
       <rect (click)="clicked(square)" *ngIf="square.value != null && square.state == grid.displayState.REGULAR"
         [attr.x]="1 + square.location.column * 40" [attr.y]="1 + square.location.row * 40" width="40" height="40"
         style="fill: rgb(255,255,255); stroke-width: 1; stroke: rgb(55,55,55);"></rect>

@@ -7,8 +7,11 @@
       </div>
     </div>
     <div class="col-md d-flex flex-column primary-column mh-100 pt-2 pb-3">
-      <div class="flex-fill overflow-auto" style="min-height: 0px;" [ngbNavOutlet]="menubar.tab">
-      </div>
+      <!-- consider removing this horrible hack by using routes. -->
+      <ng-container *ngIf="menubar.tab">
+        <div class="flex-fill overflow-auto" style="min-height: 0px;" [ngbNavOutlet]="menubar.tab">
+        </div>
+      </ng-container>
     </div>
   </div>
 </div>
