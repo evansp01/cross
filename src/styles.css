@@ -37,6 +37,10 @@ div.tab-content div.tab-pane {
   background: #cdcdcd;
   background-clip: content-box;
 }
+
+.nav-tabs { 
+    border-bottom: none;
+ }
   
   
   
