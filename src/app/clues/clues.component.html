@@ -2,7 +2,7 @@
   <div>
     <table class="table-with-input">
       <tr>
-        <td colspan="3">Across Clues</td>
+        <td class="pb-2" colspan="3">Across Clues</td>
       </tr>
       <ng-container *ngFor="let clue of acrossClues trackBy: trackByCursor">
         <tr [class.active]="clue.focus" [id]="clue.id" tabindex="0" (focusin)="selectClue(clue)"
@@ -11,14 +11,14 @@
             <div>{{clue.index}}A.</div>
           </td>
           <td>{{clue.word}}</td>
-          <td class="pl-1" style="min-width: 200px;">
-            <quill-editor [(ngModel)]="clue.clue" #modelRef="ngModel"></quill-editor>
+          <td class="pl-3" style="min-width: 200px;">
+            <quill-editor placeholder="(no clue)" [(ngModel)]="clue.clue" #modelRef="ngModel"></quill-editor>
           </td>
         </tr>
       </ng-container>
 
       <tr>
-        <td colspan="3">Down Clues</td>
+        <td class="py-2" colspan="3">Down Clues</td>
       </tr>
       <ng-container *ngFor="let clue of downClues trackBy: trackByCursor">
         <tr [class.active]="clue.focus" [id]="clue.id" tabindex="0" (focusin)="selectClue(clue)"
@@ -27,8 +27,8 @@
             <div>{{clue.index}}D.</div>
           </td>
           <td>{{clue.word}}</td>
-          <td class="pl-1" style="min-width: 200px;">
-            <quill-editor [(ngModel)]="clue.clue" #modelRef="ngModel"></quill-editor>
+          <td class="pl-3" style="min-width: 200px;">
+            <quill-editor placeholder="(no clue)" [(ngModel)]="clue.clue" #modelRef="ngModel"></quill-editor>
           </td>
         </tr>
       </ng-container>
