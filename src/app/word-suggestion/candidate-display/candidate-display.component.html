@@ -1,6 +1,6 @@
-<div class="d-flex flex-column h-100">
+<div class="d-flex flex-column h-100 pt-2 pb-1">
   <p>{{label}}: {{displayString}}</p>
-  <cdk-virtual-scroll-viewport itemSize="20" minBufferPx="400" maxBufferPx="800" class="flex-grow-1">
+  <cdk-virtual-scroll-viewport itemSize="20" minBufferPx="400" maxBufferPx="800" class="dictionary-scroll flex-grow-1">
     <div *cdkVirtualFor="let item of filteredCandidates" style="height: 20px">
       {{ item }}
     </div>

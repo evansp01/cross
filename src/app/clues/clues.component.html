@@ -1,35 +1,37 @@
-<div>
-  <table class="table-with-input">
-    <tr>
-      <td colspan="3">Across Clues</td>
-    </tr>
-    <ng-container *ngFor="let clue of acrossClues trackBy: trackByCursor">
-      <tr [class.active]="clue.focus" [id]="clue.id" tabindex="0" (focusin)="selectClue(clue)"
-        (focusout)="commitClue(clue)">
-        <td>
-          <div>{{clue.index}}A.</div>
-        </td>
-        <td>{{clue.word}}</td>
-        <td style="min-width: 200px;">
-          <quill-editor [(ngModel)]="clue.clue" #modelRef="ngModel"></quill-editor>
-        </td>
+<div class="h-100 overflow-auto d-flex flex-column" style="max-width: 600px">
+  <div>
+    <table class="table-with-input">
+      <tr>
+        <td colspan="3">Across Clues</td>
       </tr>
-    </ng-container>
+      <ng-container *ngFor="let clue of acrossClues trackBy: trackByCursor">
+        <tr [class.active]="clue.focus" [id]="clue.id" tabindex="0" (focusin)="selectClue(clue)"
+          (focusout)="commitClue(clue)">
+          <td>
+            <div>{{clue.index}}A.</div>
+          </td>
+          <td>{{clue.word}}</td>
+          <td class="pl-1" style="min-width: 200px;">
+            <quill-editor [(ngModel)]="clue.clue" #modelRef="ngModel"></quill-editor>
+          </td>
+        </tr>
+      </ng-container>
 
-    <tr>
-      <td colspan="3">Down Clues</td>
-    </tr>
-    <ng-container *ngFor="let clue of downClues trackBy: trackByCursor">
-      <tr [class.active]="clue.focus" [id]="clue.id" tabindex="0" (focusin)="selectClue(clue)"
-        (focusout)="commitClue(clue)">
-        <td>
-          <div>{{clue.index}}D.</div>
-        </td>
-        <td>{{clue.word}}</td>
-        <td style="min-width: 200px;">
-          <quill-editor [(ngModel)]="clue.clue" #modelRef="ngModel"></quill-editor>
-        </td>
+      <tr>
+        <td colspan="3">Down Clues</td>
       </tr>
-    </ng-container>
-  </table>
+      <ng-container *ngFor="let clue of downClues trackBy: trackByCursor">
+        <tr [class.active]="clue.focus" [id]="clue.id" tabindex="0" (focusin)="selectClue(clue)"
+          (focusout)="commitClue(clue)">
+          <td>
+            <div>{{clue.index}}D.</div>
+          </td>
+          <td>{{clue.word}}</td>
+          <td class="pl-1" style="min-width: 200px;">
+            <quill-editor [(ngModel)]="clue.clue" #modelRef="ngModel"></quill-editor>
+          </td>
+        </tr>
+      </ng-container>
+    </table>
+  </div>
 </div>

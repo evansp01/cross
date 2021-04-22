@@ -1,3 +1,6 @@
 .active {
     background-color: aqua;
 }
+* {
+    font-size: 14px;
+}
