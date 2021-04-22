@@ -5,8 +5,9 @@
         <button type="button" class="btn btn-default navbar-btn shadow-none"
             (click)="fileupload.click()">Import</button>
         <button type="button" class="btn btn-default navbar-btn shadow-none" (click)=saveToFile()>Export</button>
-        <input type="file" accept=".txt,.TXT,.dict" #dictupload (change)="handleDictUpload($event)" hidden>
-        <button type="button" class="btn btn-default navbar-btn shadow-none" (click)="dictupload.click()">Dict</button>
+        <input type="file" accept=".txt" #dictupload (change)="handleDictUpload($event)" hidden>
+        <button type="button" class="btn btn-default navbar-btn shadow-none"
+            (click)="dictupload.click()">Dictionary</button>
     </div>
     <div class="col-sm d-flex flex-row primary-column">
         <ul ngbNav #nav="ngbNav" class="nav-tabs mr-auto">
