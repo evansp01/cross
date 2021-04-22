@@ -12,13 +12,12 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CluesComponent } from './clues/clues.component';
 import { QuillModule } from 'ngx-quill';
 import { DictionarySearchComponent } from './dictionary-search/dictionary-search.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
 import { MenubarComponent } from './menubar/menubar.component';
 
 @NgModule({
   declarations: [
     AppComponent, WordSuggestionComponent, GridDisplayComponent,
-    CandidateDisplayComponent, CluesComponent, DictionarySearchComponent, SidebarComponent, MenubarComponent
+    CandidateDisplayComponent, CluesComponent, DictionarySearchComponent, MenubarComponent
   ],
   imports: [
     BrowserModule, ScrollingModule, FormsModule, ReactiveFormsModule, BrowserAnimationsModule, NgbModule,

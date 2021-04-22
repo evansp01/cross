@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { SerializationService } from '../core/serialization.service';
 import { PuzzleStateService } from '../core/puzzle-state.service';
 import { saveAs } from 'file-saver';
+import { NgbNav } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-menubar',
@@ -9,6 +10,7 @@ import { saveAs } from 'file-saver';
   styleUrls: ['./menubar.component.css']
 })
 export class MenubarComponent implements OnInit {
+  @ViewChild('nav') tab!: NgbNav;
   private serializationService: SerializationService;
   private puzzleStateService: PuzzleStateService;
 
