@@ -5,3 +5,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .ql-editor {
     padding: 0px !important;
 }
+div.tab-content > div.tab-pane {
+    height: 100%;
+}

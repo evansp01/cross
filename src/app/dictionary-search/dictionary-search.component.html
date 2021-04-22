@@ -1,11 +1,11 @@
 Search dictionary for words:
-<input class="form-control form-control-sm col-sm-3 shadow-none" placeholder="regex" type="text"
+<input class="form-control form-control-sm shadow-none" placeholder="regex" type="text"
     [formControl]="searchStringForm">
 <small class="text-danger" *ngIf="searchStringForm.invalid && (searchStringForm.dirty || searchStringForm.touched)">
     &nbsp;invalid regex
 </small>
 
-<cdk-virtual-scroll-viewport itemSize="20" minBufferPx="400" maxBufferPx="800" style="height: 400px; width: 300px;">
+<cdk-virtual-scroll-viewport itemSize="20" minBufferPx="800" maxBufferPx="1200" class="flex-grow-1">
     <div *cdkVirtualFor="let item of words" style="height: 20px">
         {{ item }}
     </div>

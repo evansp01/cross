@@ -13,19 +13,19 @@
             <li [ngbNavItem]="1" class="nav-item">
                 <a ngbNavLink>Fill</a>
                 <ng-template ngbNavContent>
-                    <app-word-suggestion></app-word-suggestion>
+                    <app-word-suggestion class="d-flex flex-column h-100"></app-word-suggestion>
                 </ng-template>
             </li>
             <li [ngbNavItem]="2" class="nav-item">
                 <a ngbNavLink>Clues</a>
                 <ng-template ngbNavContent>
-                    <app-clues></app-clues>
+                    <app-clues class="d-flex flex-column h-100"></app-clues>
                 </ng-template>
             </li>
             <li [ngbNavItem]="3" class="nav-item">
                 <a ngbNavLink>Search</a>
                 <ng-template ngbNavContent>
-                    <app-dictionary-search></app-dictionary-search>
+                    <app-dictionary-search class="d-flex flex-column h-100"></app-dictionary-search>
                 </ng-template>
             </li>
         </ul>

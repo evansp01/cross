@@ -1,14 +1,16 @@
 <div class="form-inline">
   <input class="form-control form-control-sm col-sm-3 shadow-none" placeholder="letter regex" type="text"
     [formControl]="searchStringForm">
-  <button class="btn btn-sm btn-light shadow-none" (click)="setVowel()">Vowels</button>
-  <button class="btn btn-sm btn-light shadow-none" (click)="setConsonant()">Consonants</button>
+  <button class="btn btn-sm btn-light shadow-none" (click)="setVowel()">Vowel</button>
+  <button class="btn btn-sm btn-light shadow-none" (click)="setConsonant()">Consonant</button>
   <small class="text-danger" *ngIf="searchStringForm.invalid && (searchStringForm.dirty || searchStringForm.touched)">
     &nbsp;invalid regex
   </small>
 </div>
 
-<app-candidate-display label="Across Word" [word]="acrossWord" [searchCharacter]="searchStringForm.value">
+<app-candidate-display class="flex-grow-1" label="Across Word" [word]="acrossWord"
+  [searchCharacter]="searchStringForm.value">
 </app-candidate-display>
-<app-candidate-display label="Down Word" [word]="downWord" [searchCharacter]="searchStringForm.value">
+<app-candidate-display class="flex-grow-1" label="Down Word" [word]="downWord"
+  [searchCharacter]="searchStringForm.value">
 </app-candidate-display>
