@@ -8,9 +8,8 @@ import { PuzzleStateService } from '../core/puzzle-state.service';
   styleUrls: ['./grid-display.component.css']
 })
 export class GridDisplayComponent implements OnInit {
-  title = 'cross';
-  grid: DisplayStateService;
-  state: PuzzleStateService;
+  private grid: DisplayStateService;
+  private state: PuzzleStateService;
 
   constructor(gridDisplay: DisplayStateService, puzzleStateService: PuzzleStateService) {
     this.grid = gridDisplay;

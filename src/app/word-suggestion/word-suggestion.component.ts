@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { DictionaryService } from '../core/dictionary.service';
 import { DisplayWord, DisplayStateService } from '../core/display-state.service';
 
@@ -21,16 +22,15 @@ export function invalidRegexValidator(): ValidatorFn {
   templateUrl: './word-suggestion.component.html',
   styleUrls: ['./word-suggestion.component.css'],
 })
-export class WordSuggestionComponent implements OnInit {
-  dictionaryService: DictionaryService;
-  gridDisplay: DisplayStateService;
+export class WordSuggestionComponent implements OnInit, OnDestroy {
+  private subscriptions = new Subscription();
+  private gridDisplay: DisplayStateService;
 
   acrossWord: DisplayWord | null;
   downWord: DisplayWord | null;
   searchStringForm: FormControl;
 
-  constructor(dictionary: DictionaryService, gridDisplay: DisplayStateService) {
-    this.dictionaryService = dictionary;
+  constructor(gridDisplay: DisplayStateService) {
     this.gridDisplay = gridDisplay;
     this.acrossWord = null;
     this.downWord = null;
@@ -38,6 +38,25 @@ export class WordSuggestionComponent implements OnInit {
       invalidRegexValidator()
     ]);
   }
+
+  ngOnInit(): void {
+    this.subscriptions.add(this.gridDisplay.getCurrentWord().subscribe({
+      next: (w) => {
+        this.acrossWord = w === null ? null : w.across;
+        this.downWord = w === null ? null : w.down;
+        if (w !== null) {
+          this.setSearchCharacter(w.across.characters[w.across.cursorPosition]);
+        } else {
+          this.clearSearchCharacter();
+        }
+      }
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
 
   setVowel(): void {
     if (this.searchStringForm.enabled) {
@@ -65,17 +84,4 @@ export class WordSuggestionComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    this.gridDisplay.getCurrentWord().subscribe({
-      next: (w) => {
-        this.acrossWord = w === null ? null : w.across;
-        this.downWord = w === null ? null : w.down;
-        if (w !== null) {
-          this.setSearchCharacter(w.across.characters[w.across.cursorPosition]);
-        } else {
-          this.clearSearchCharacter();
-        }
-      }
-    });
-  }
 }

@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { LocalStateStore, LocalStateStoreService } from '../core/local-state-store.service';
 import { PuzzleState, PuzzleStateService } from '../core/puzzle-state.service';
 
@@ -8,8 +9,8 @@ import { PuzzleState, PuzzleStateService } from '../core/puzzle-state.service';
   templateUrl: './crossword.component.html',
   styleUrls: ['./crossword.component.css']
 })
-export class CrosswordComponent implements OnInit, AfterViewInit {
-
+export class CrosswordComponent implements OnInit, OnDestroy, AfterViewInit {
+  private subscriptions = new Subscription();
   private route: ActivatedRoute;
   private puzzleState: PuzzleStateService;
   private localStore: LocalStateStoreService;
@@ -28,12 +29,12 @@ export class CrosswordComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.puzzleState.getState().subscribe(s => {
+    this.subscriptions.add(this.puzzleState.getState().subscribe(s => {
       if (this.storage !== null) {
         this.storage.saveState(s);
       }
-    });
-    this.route.paramMap.subscribe((params) => {
+    }));
+    this.subscriptions.add(this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id === null) {
         return;
@@ -47,6 +48,10 @@ export class CrosswordComponent implements OnInit, AfterViewInit {
         this.puzzleState.setState(PuzzleState.newState(15));
       }
       this.storage = storage;
-    });
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

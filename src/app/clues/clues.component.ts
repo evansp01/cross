@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { DisplayStateService } from '../core/display-state.service';
 import { Cursor, Orientation, PuzzleState, Square, PuzzleStateService, Word } from '../core/puzzle-state.service';
 
@@ -52,7 +53,8 @@ function cursorEqual(c1: Cursor | null, c2: Cursor | null): boolean {
   templateUrl: './clues.component.html',
   styleUrls: ['./clues.component.css'],
 })
-export class CluesComponent implements OnInit {
+export class CluesComponent implements OnInit, OnDestroy {
+  private subscriptions = new Subscription();
   private puzzleStateService: PuzzleStateService;
   private gridDisplay: DisplayStateService;
 
@@ -70,7 +72,7 @@ export class CluesComponent implements OnInit {
 
   ngOnInit(): void {
     this.puzzleStateService.getState().subscribe({ next: (n) => this.updateCluesFromState(n) });
-    this.gridDisplay.getCurrentWord().subscribe({
+    this.subscriptions.add(this.gridDisplay.getCurrentWord().subscribe({
       next: (n) => {
         if (n === null) {
           this.updateHighlightingFromCursor(null);
@@ -80,7 +82,11 @@ export class CluesComponent implements OnInit {
           this.updateHighlightingFromCursor({ location: n.down.location, orientation: n.orientation });
         }
       }
-    });
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   commitClue(clue: DisplayClue): void {
@@ -101,13 +107,13 @@ export class CluesComponent implements OnInit {
     }
   }
 
-  highlightClue(cursor: Cursor | null): void {
+  private highlightClue(cursor: Cursor | null): void {
     this.acrossClues.forEach(c => { c.focus = cursorEqual(c.cursor, cursor); });
     this.downClues.forEach(c => { c.focus = cursorEqual(c.cursor, cursor); });
     this.focusedClueCursor = cursor;
   }
 
-  updateHighlightingFromCursor(cursor: Cursor | null): void {
+  private updateHighlightingFromCursor(cursor: Cursor | null): void {
     if (!cursorEqual(this.focusedClueCursor, cursor)) {
       this.highlightClue(cursor);
       if (cursor != null) {
@@ -117,7 +123,7 @@ export class CluesComponent implements OnInit {
     }
   }
 
-  updateCluesFromState(state: PuzzleState): void {
+  private updateCluesFromState(state: PuzzleState): void {
     const info = state.makeWordInfo();
     const acrossClues: DisplayClue[] = [];
     const downClues: DisplayClue[] = [];

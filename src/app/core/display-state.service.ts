@@ -52,9 +52,7 @@ export interface CurrentWord {
   providedIn: 'root'
 })
 export class DisplayStateService {
-  displayState = DisplayState;
-
-  private PuzzleStateService: PuzzleStateService;
+  private puzzleStateService: PuzzleStateService;
   private display: DisplaySquare[][];
 
   private rows!: number;
@@ -65,7 +63,7 @@ export class DisplayStateService {
   private currentWord: BehaviorSubject<CurrentWord | null>;
 
   constructor(puzzleStateService: PuzzleStateService) {
-    this.PuzzleStateService = puzzleStateService;
+    this.puzzleStateService = puzzleStateService;
     const state = puzzleStateService.getState().value;
     this.display = state.grid.squares.map(row => row.map(square => {
       return {
@@ -77,7 +75,8 @@ export class DisplayStateService {
     }));
     this.currentWord = new BehaviorSubject<CurrentWord | null>(null);
     this.refreshDisplayFromState(state);
-    this.PuzzleStateService.getState().subscribe({
+    // Never destroyed.
+    this.puzzleStateService.getState().subscribe({
       next: s => {
         this.refreshDisplayFromState(s);
       },
@@ -188,7 +187,7 @@ export class DisplayStateService {
 
   mutateAndStep(value: Value, step: number): void {
     const cursor = this.cursor;
-    this.PuzzleStateService.setSquare(cursor, value);
+    this.puzzleStateService.setSquare(cursor, value);
     if (cursor.orientation === Orientation.ACROSS) {
       this.moveAcross(step);
     }

@@ -21,9 +21,10 @@ export class CandidateDisplayComponent implements OnInit, OnChanges {
   @Input() word!: DisplayWord | null;
   @Input() searchCharacter!: string;
   @Input() label!: string;
-  dictionaryService: DictionaryService;
 
+  private dictionaryService: DictionaryService;
   private candidates: string[];
+
   filteredCandidates: string[];
   displayString: string;
 

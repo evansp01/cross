@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, ValidatorFn } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { DictionaryService } from '../core/dictionary.service';
 
 export function invalidRegexValidator(): ValidatorFn {
@@ -20,9 +21,9 @@ export function invalidRegexValidator(): ValidatorFn {
   templateUrl: './dictionary-search.component.html',
   styleUrls: ['./dictionary-search.component.css']
 })
-export class DictionarySearchComponent implements OnInit {
-
-  dictionaryService: DictionaryService;
+export class DictionarySearchComponent implements OnInit, OnDestroy {
+  private subscriptions = new Subscription();
+  private dictionaryService: DictionaryService;
   searchStringForm: FormControl;
   words: string[];
 
@@ -36,7 +37,7 @@ export class DictionarySearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.words = this.dictionaryService.getMatches(new RegExp('.'));
-    this.searchStringForm.valueChanges.subscribe({
+    this.subscriptions.add(this.searchStringForm.valueChanges.subscribe({
       next: (v: string) => {
         try {
           const regex = new RegExp(v, 'i');
@@ -45,7 +46,11 @@ export class DictionarySearchComponent implements OnInit {
           this.words = [];
         }
       }
-    });
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
 }
