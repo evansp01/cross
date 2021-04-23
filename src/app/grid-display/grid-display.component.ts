@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DisplaySquare, DisplayStateService } from '../core/display-state.service';
+import { DisplaySquare, DisplayState, DisplayStateService } from '../core/display-state.service';
 import { PuzzleStateService } from '../core/puzzle-state.service';
 
 @Component({
@@ -8,8 +8,11 @@ import { PuzzleStateService } from '../core/puzzle-state.service';
   styleUrls: ['./grid-display.component.css']
 })
 export class GridDisplayComponent implements OnInit {
-  private grid: DisplayStateService;
   private state: PuzzleStateService;
+
+  // Used by html template.
+  grid: DisplayStateService;
+  displayState = DisplayState;
 
   constructor(gridDisplay: DisplayStateService, puzzleStateService: PuzzleStateService) {
     this.grid = gridDisplay;

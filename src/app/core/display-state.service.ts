@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { WordInfo, Word, Value, Cursor, Location, PuzzleState, Orientation, PuzzleStateService, WordPosition, Square } from './puzzle-state.service';
 
 function wordToDisplay(word: Word, pos: WordPosition): DisplayWord {
@@ -51,7 +51,8 @@ export interface CurrentWord {
 @Injectable({
   providedIn: 'root'
 })
-export class DisplayStateService {
+export class DisplayStateService implements OnDestroy {
+  private subscriptions = new Subscription();
   private puzzleStateService: PuzzleStateService;
   private display: DisplaySquare[][];
 
@@ -75,12 +76,15 @@ export class DisplayStateService {
     }));
     this.currentWord = new BehaviorSubject<CurrentWord | null>(null);
     this.refreshDisplayFromState(state);
-    // Never destroyed.
-    this.puzzleStateService.getState().subscribe({
+    this.subscriptions.add(this.puzzleStateService.getState().subscribe({
       next: s => {
         this.refreshDisplayFromState(s);
       },
-    });
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   private refreshDisplayFromState(state: PuzzleState): void {
