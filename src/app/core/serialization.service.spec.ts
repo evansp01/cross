@@ -71,8 +71,6 @@ describe('SerializationService', () => {
       const puzz2 = new Puzz();
       puzz2.read(roundtrip);
 
-      console.log(puzz1.puzzle);
-      console.log(puzz1.state);
       expect(puzz2.width).toEqual(puzz1.width);
       expect(puzz2.height).toEqual(puzz1.height);
       expect(puzz2.puzzle).toEqual(puzz1.puzzle);

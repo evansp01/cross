@@ -13,11 +13,14 @@ import { CluesComponent } from './clues/clues.component';
 import { QuillModule } from 'ngx-quill';
 import { DictionarySearchComponent } from './dictionary-search/dictionary-search.component';
 import { MenubarComponent } from './menubar/menubar.component';
+import { AppRoutingModule } from './app-routing.module';
+import { CrosswordComponent } from './crossword/crossword.component';
+import { RedirectComponent } from './redirect.component';
 
 @NgModule({
   declarations: [
     AppComponent, WordSuggestionComponent, GridDisplayComponent,
-    CandidateDisplayComponent, CluesComponent, DictionarySearchComponent, MenubarComponent
+    CandidateDisplayComponent, CluesComponent, DictionarySearchComponent, MenubarComponent, CrosswordComponent, RedirectComponent
   ],
   imports: [
     BrowserModule, ScrollingModule, FormsModule, ReactiveFormsModule, BrowserAnimationsModule, NgbModule,
@@ -41,7 +44,8 @@ import { MenubarComponent } from './menubar/menubar.component';
       theme: 'bubble',
       formats: [],
       format: 'text'
-    })
+    }),
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

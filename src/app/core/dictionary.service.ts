@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 
-const data: string[] = require('./words.json').data.split(' ');
-
 @Injectable({
   providedIn: 'root'
 })
@@ -13,7 +11,7 @@ export class DictionaryService {
   constructor() {
     this.wordsDict = new Map();
     this.dict = [];
-    this.setDictionary(data);
+    this.setDictionary(require('./words.json').data.split(' '));
   }
 
   setDictionary(dict: string[]): void {
@@ -31,7 +29,6 @@ export class DictionaryService {
 
   getMatchingWords(regex: RegExp, length: number): string[] {
     const words = this.wordsDict.get(length);
-    console.log('words: ' + words?.length);
     if (words === undefined) {
       return [];
     }

@@ -32,7 +32,6 @@ export class MenubarComponent implements OnInit {
       file.arrayBuffer().then((buffer) => {
         const state = this.serializationService.puzzleStateFromPuz(new Uint8Array(buffer));
         this.puzzleStateService.setState(state);
-        console.log(state.grid);
         // Reset the file input
         target.value = '';
       });

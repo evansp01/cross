@@ -26,7 +26,6 @@ export class GridDisplayComponent implements OnInit {
 
   // @HostListener('window:keydown', ['$event'])
   onKeyPress(event: KeyboardEvent): void {
-    console.log('Received event ' + event + ' with key ' + event.key);
     if (event.ctrlKey || event.metaKey) {
       switch (event.key) {
         case 'z':
@@ -86,7 +85,6 @@ export class GridDisplayComponent implements OnInit {
       this.grid.mutateAndStep(event.key.toUpperCase(), 1);
       // event.preventDefault()
     }
-    console.log('Finished handling keyboard event');
   }
 }
 

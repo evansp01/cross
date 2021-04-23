@@ -376,8 +376,6 @@ export class SerializationService {
       copyright: puz.copyright,
       notes: puz.notes,
     });
-    console.log(puz.clues.length);
-    console.log(state.grid.getWordStarts().length);
     return state;
   }
 
@@ -404,8 +402,6 @@ export class SerializationService {
     puz.notes = state.data.notes;
     puz.clues = clues;
     puz.updatePuzzle(state.grid.rows, state.grid.columns, puzzle);
-    console.log(state.grid.getWordStarts().length);
-    console.log(puz.clues.length);
     return puz.write();
   }
 }
