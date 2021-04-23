@@ -18,6 +18,23 @@ export interface Cursor {
   readonly orientation: Orientation;
 }
 
+export function cursorEqual(c1: Cursor | null, c2: Cursor | null): boolean {
+  if (c1 === c2) {
+    return true;
+  } else if (c1 === null || c2 === null) {
+    return false;
+  } else {
+    return c1.orientation === c2.orientation &&
+      c1.location.row === c2.location.row &&
+      c1.location.column === c2.location.column;
+  }
+}
+
+
+export function cursorString(c: Cursor): string {
+  return `${c.location.row}-${c.location.column}-${c.orientation}`;
+}
+
 export interface Square {
   readonly location: Location;
   readonly value: Value;
@@ -284,6 +301,7 @@ export class PuzzleState {
     return mappings;
   }
 }
+
 
 
 @Injectable({

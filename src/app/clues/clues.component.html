@@ -4,15 +4,14 @@
       <tr>
         <td class="pb-2" colspan="3">Across Clues</td>
       </tr>
-      <ng-container *ngFor="let clue of acrossClues trackBy: trackByCursor">
-        <tr [class.active]="clue.focus" [id]="clue.id" tabindex="0" (focusin)="selectClue(clue)"
-          (focusout)="commitClue(clue)">
+      <ng-container *ngFor="let clue of gridDisplay.getAcrossClues() trackBy: trackByCursor">
+        <tr [class.active]="clue.focus" [id]="id(clue)" tabindex="0" (focusin)="selectClue(clue)">
           <td>
             <div>{{clue.index}}A.</div>
           </td>
           <td>{{clue.word}}</td>
           <td class="pl-3" style="min-width: 200px;">
-            <quill-editor placeholder="(no clue)" [(ngModel)]="clue.clue" #modelRef="ngModel"></quill-editor>
+            <app-clue [clue]="clue"></app-clue>
           </td>
         </tr>
       </ng-container>
@@ -20,15 +19,14 @@
       <tr>
         <td class="py-2" colspan="3">Down Clues</td>
       </tr>
-      <ng-container *ngFor="let clue of downClues trackBy: trackByCursor">
-        <tr [class.active]="clue.focus" [id]="clue.id" tabindex="0" (focusin)="selectClue(clue)"
-          (focusout)="commitClue(clue)">
+      <ng-container *ngFor="let clue of gridDisplay.getDownClues() trackBy: trackByCursor">
+        <tr [class.active]="clue.focus" [id]="id(clue)" tabindex="0" (focusin)="selectClue(clue)">
           <td>
             <div>{{clue.index}}D.</div>
           </td>
           <td>{{clue.word}}</td>
           <td class="pl-3" style="min-width: 200px;">
-            <quill-editor placeholder="(no clue)" [(ngModel)]="clue.clue" #modelRef="ngModel"></quill-editor>
+            <app-clue [clue]="clue"></app-clue>
           </td>
         </tr>
       </ng-container>

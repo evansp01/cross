@@ -1,15 +1,37 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { WordInfo, Word, Value, Cursor, Location, PuzzleState, Orientation, PuzzleStateService, WordPosition, Square } from './puzzle-state.service';
+import { WordInfo, Word, Value, Cursor, Location, PuzzleState, Orientation, PuzzleStateService, WordPosition, Square, cursorEqual } from './puzzle-state.service';
 
 function wordToDisplay(word: Word, pos: WordPosition): DisplayWord {
   return {
     location: word.squares[0].location,
-    characters: word.squares.map(s => s.value == null ? ' ' : s.value.toLowerCase()),
+    // Note: value cannot be null within a word.
+    characters: word.squares.map(s => s.value == null ? '' : s.value.toLowerCase()),
     wordNumber: pos.word,
     cursorPosition: pos.position,
     clue: word.clue.value,
   };
+}
+
+function wordsToDisplayClues(words: IterableIterator<Word>): DisplayClue[] {
+  const clues = [];
+  for (const word of words) {
+    const text = word.squares.map((s: Square) => {
+      if (s.value === '') {
+        return '_';
+      } else {
+        return s.value;
+      }
+    }).join('');
+    clues.push({
+      index: word.index,
+      clue: word.clue.value,
+      word: text,
+      cursor: word.clue.cursor,
+      focus: false,
+    });
+  }
+  return clues;
 }
 
 function switchOrientation(orientation: Orientation): Orientation {
@@ -35,17 +57,25 @@ export interface DisplaySquare {
 }
 
 export interface DisplayWord {
-  location: Location;
-  characters: string[];
-  wordNumber: number;
-  cursorPosition: number;
-  clue: string;
+  readonly location: Location;
+  readonly characters: string[];
+  readonly wordNumber: number;
+  readonly cursorPosition: number;
+  readonly clue: string;
+}
+
+export interface DisplayClue {
+  readonly index: number;
+  readonly word: string;
+  readonly clue: string;
+  readonly cursor: Cursor;
+  focus: boolean;
 }
 
 export interface CurrentWord {
-  orientation: Orientation;
-  across: DisplayWord;
-  down: DisplayWord;
+  readonly cursor: Cursor;
+  readonly across: DisplayWord;
+  readonly down: DisplayWord;
 }
 
 @Injectable({
@@ -55,6 +85,8 @@ export class DisplayStateService implements OnDestroy {
   private subscriptions = new Subscription();
   private puzzleStateService: PuzzleStateService;
   private display: DisplaySquare[][];
+  private acrossClues: DisplayClue[];
+  private downClues: DisplayClue[];
 
   private rows!: number;
   private columns!: number;
@@ -74,6 +106,8 @@ export class DisplayStateService implements OnDestroy {
         state: DisplayState.REGULAR
       };
     }));
+    this.acrossClues = [];
+    this.downClues = [];
     this.currentWord = new BehaviorSubject<CurrentWord | null>(null);
     this.refreshDisplayFromState(state);
     this.subscriptions.add(this.puzzleStateService.getState().subscribe({
@@ -101,8 +135,15 @@ export class DisplayStateService implements OnDestroy {
     this.wordInfo.downWords.forEach(w => {
       this.display[w.cursor.location.row][w.cursor.location.column].wordNumber = w.index;
     });
+
+    this.acrossClues = wordsToDisplayClues(
+      this.wordInfo.acrossWords.values()).sort((a, b) => a.index - b.index);
+    this.downClues = wordsToDisplayClues(
+      this.wordInfo.downWords.values()).sort((a, b) => a.index - b.index);
+
     this.updateDisplayHighlighting(state.cursor);
   }
+
 
   private updateDisplayHighlighting(cursor: Cursor): void {
     this.cursor = cursor;
@@ -111,6 +152,8 @@ export class DisplayStateService implements OnDestroy {
     }));
     const acrossWordNum = this.wordInfo.acrossGrid[cursor.location.row][cursor.location.column];
     const downWordNum = this.wordInfo.downGrid[cursor.location.row][cursor.location.column];
+
+    let nextWord: CurrentWord | null = null;
     if (acrossWordNum != null && downWordNum != null) {
       const acrossWord = this.wordInfo.acrossWords.get(acrossWordNum.word);
       const downWord = this.wordInfo.downWords.get(downWordNum.word);
@@ -121,15 +164,17 @@ export class DisplayStateService implements OnDestroy {
       focus.squares.forEach(s => {
         this.display[s.location.row][s.location.column].state = DisplayState.HIGHLIGHTED;
       });
-      this.currentWord.next({
-        orientation: cursor.orientation,
+      nextWord = {
+        cursor: focus.cursor,
         across: wordToDisplay(acrossWord, acrossWordNum),
         down: wordToDisplay(downWord, downWordNum),
-      });
-    } else {
-      this.currentWord.next(null);
+      };
     }
+    const focusCursor = nextWord !== null ? nextWord.cursor : null;
+    this.acrossClues.forEach(c => { c.focus = cursorEqual(c.cursor, focusCursor); });
+    this.downClues.forEach(c => { c.focus = cursorEqual(c.cursor, focusCursor); });
     this.display[cursor.location.row][cursor.location.column].state = DisplayState.FOCUS;
+    this.currentWord.next(nextWord);
   }
 
   private currentSquare(): Square {
@@ -138,6 +183,14 @@ export class DisplayStateService implements OnDestroy {
 
   getDisplay(): DisplaySquare[][] {
     return this.display;
+  }
+
+  getAcrossClues(): DisplayClue[] {
+    return this.acrossClues;
+  }
+
+  getDownClues(): DisplayClue[] {
+    return this.downClues;
   }
 
   getCurrentWord(): Observable<CurrentWord | null> {

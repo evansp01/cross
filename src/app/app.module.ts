@@ -17,11 +17,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { CrosswordComponent } from './crossword/crossword.component';
 import { RedirectComponent } from './redirect.component';
 import { MetadataComponent } from './metadata/metadata.component';
+import { ClueComponent } from './clues/clue/clue.component';
 
 @NgModule({
   declarations: [
     AppComponent, WordSuggestionComponent, GridDisplayComponent,
-    CandidateDisplayComponent, CluesComponent, DictionarySearchComponent, MenubarComponent, CrosswordComponent, RedirectComponent, MetadataComponent
+    CandidateDisplayComponent, CluesComponent, DictionarySearchComponent, MenubarComponent, CrosswordComponent, RedirectComponent, MetadataComponent, ClueComponent
   ],
   imports: [
     BrowserModule, ScrollingModule, FormsModule, ReactiveFormsModule, BrowserAnimationsModule, NgbModule,
