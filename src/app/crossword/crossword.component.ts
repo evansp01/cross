@@ -1,4 +1,3 @@
-import { trimTrailingNulls } from '@angular/compiler/src/render3/view/util';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LocalStateStore, LocalStateStoreService } from '../core/local-state-store.service';
@@ -23,6 +22,7 @@ export class CrosswordComponent implements OnInit, AfterViewInit {
     this.localStore = localStore;
     this.storage = null;
   }
+
   ngAfterViewInit(): void {
     setTimeout(() => { this.tabReady = true; }, 0);
   }

@@ -16,11 +16,12 @@ import { MenubarComponent } from './menubar/menubar.component';
 import { AppRoutingModule } from './app-routing.module';
 import { CrosswordComponent } from './crossword/crossword.component';
 import { RedirectComponent } from './redirect.component';
+import { MetadataComponent } from './metadata/metadata.component';
 
 @NgModule({
   declarations: [
     AppComponent, WordSuggestionComponent, GridDisplayComponent,
-    CandidateDisplayComponent, CluesComponent, DictionarySearchComponent, MenubarComponent, CrosswordComponent, RedirectComponent
+    CandidateDisplayComponent, CluesComponent, DictionarySearchComponent, MenubarComponent, CrosswordComponent, RedirectComponent, MetadataComponent
   ],
   imports: [
     BrowserModule, ScrollingModule, FormsModule, ReactiveFormsModule, BrowserAnimationsModule, NgbModule,

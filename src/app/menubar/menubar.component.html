@@ -25,11 +25,18 @@
                 </ng-template>
             </li>
             <li [ngbNavItem]="3" class="nav-item">
+                <a ngbNavLink>Info</a>
+                <ng-template ngbNavContent>
+                    <app-metadata class="d-flex flex-column h-100"></app-metadata>
+                </ng-template>
+            </li>
+            <li [ngbNavItem]="4" class="nav-item">
                 <a ngbNavLink>Search</a>
                 <ng-template ngbNavContent>
                     <app-dictionary-search class="d-flex flex-column h-100"></app-dictionary-search>
                 </ng-template>
             </li>
+
         </ul>
     </div>
 </nav>
