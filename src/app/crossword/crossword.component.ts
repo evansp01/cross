@@ -30,21 +30,17 @@ export class CrosswordComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.puzzleState.getState().subscribe(s => {
       if (this.storage !== null) {
-        console.log('saving');
-        console.log(s);
         this.storage.saveState(s);
       }
     });
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
-      console.log(id);
       if (id === null) {
         return;
       }
       this.storage = null;
       const storage = this.localStore.makeStateStore(id);
       const state = storage.locateState();
-      console.log(state);
       if (state !== null) {
         this.puzzleState.setState(state);
       } else {

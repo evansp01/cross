@@ -60,13 +60,12 @@ export class LocalStateStoreService {
 
   pruneOldObjects(): void {
     for (const key of Object.keys(localStorage)) {
-      console.log(localStorage.getItem(key));
       const item = stringToStorageItem(localStorage.getItem(key));
       if (item === null) {
         localStorage.removeItem(key);
         continue;
       }
-      if (Date.now() - item.time < LocalStateStoreService.daysToMillis * 7) {
+      if (Date.now() - item.time > LocalStateStoreService.daysToMillis * 7) {
         localStorage.removeItem(key);
       }
     }
