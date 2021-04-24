@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { PuzzleState } from './puzzle-state.service';
+import { Subscription } from 'rxjs';
+import { PuzzleState, PuzzleStateService } from './puzzle-state.service';
 import { SerializationService } from './serialization.service';
 
 interface StorageItem {
@@ -25,6 +26,16 @@ export class LocalStateStore {
   constructor(serializationService: SerializationService, key: string) {
     this.serializationService = serializationService;
     this.key = key;
+  }
+
+  attach(puzzleState: PuzzleStateService): Subscription {
+    const existing = this.locateState();
+    if (existing) {
+      puzzleState.setState(existing);
+    }
+    return puzzleState.getState().subscribe(s => {
+      this.saveState(s);
+    });
   }
 
   saveState(state: PuzzleState): void {
@@ -58,7 +69,7 @@ export class LocalStateStoreService {
     return new LocalStateStore(this.serializationService, key);
   }
 
-  pruneOldObjects(): void {
+  private pruneOldObjects(): void {
     for (const key of Object.keys(localStorage)) {
       const item = stringToStorageItem(localStorage.getItem(key));
       if (item === null) {

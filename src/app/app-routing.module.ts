@@ -1,10 +1,30 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
-import { AppComponent } from './app.component';
+import { ActivatedRouteSnapshot, DetachedRouteHandle, RouterModule, Routes } from '@angular/router';
 import { RedirectComponent } from './redirect.component';
 import { CrosswordComponent } from './crossword/crossword.component';
 
+import { RouteReuseStrategy } from '@angular/router';
+import { MetadataComponent } from './metadata/metadata.component';
+import { WordSuggestionComponent } from './word-suggestion/word-suggestion.component';
+import { CluesComponent } from './clues/clues.component';
+import { DictionarySearchComponent } from './dictionary-search/dictionary-search.component';
+
+export class NeverReuseRoutesStrategy implements RouteReuseStrategy {
+  shouldDetach(route: ActivatedRouteSnapshot): boolean {
+    return false;
+  }
+  store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle | null): void {
+  }
+  shouldAttach(route: ActivatedRouteSnapshot): boolean {
+    return false;
+  }
+  retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle | null {
+    return null;
+  }
+  shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
+    return false;
+  }
+}
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/puzzle' },
@@ -15,6 +35,9 @@ const routes: Routes = [
 @NgModule({
   declarations: [],
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [
+    { provide: RouteReuseStrategy, useClass: NeverReuseRoutesStrategy },
+  ]
 })
 export class AppRoutingModule { }

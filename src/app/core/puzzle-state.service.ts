@@ -303,10 +303,7 @@ export class PuzzleState {
 }
 
 
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class PuzzleStateService {
 
   private past: PuzzleState[];

@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { CrosswordComponent } from '../crossword/crossword.component';
 import { WordInfo, Word, Value, Cursor, Location, PuzzleState, Orientation, PuzzleStateService, WordPosition, Square, cursorEqual } from './puzzle-state.service';
 
 function wordToDisplay(word: Word, pos: WordPosition): DisplayWord {
@@ -78,9 +79,7 @@ export interface CurrentWord {
   readonly down: DisplayWord;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DisplayStateService implements OnDestroy {
   private subscriptions = new Subscription();
   private puzzleStateService: PuzzleStateService;
