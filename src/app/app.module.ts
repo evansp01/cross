@@ -8,7 +8,6 @@ import { GridDisplayComponent } from './grid-display/grid-display.component';
 import { CandidateDisplayComponent } from './word-suggestion/candidate-display/candidate-display.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CluesComponent } from './clues/clues.component';
 import { QuillModule } from 'ngx-quill';
 import { DictionarySearchComponent } from './dictionary-search/dictionary-search.component';
@@ -22,10 +21,11 @@ import { ClueComponent } from './clues/clue/clue.component';
 @NgModule({
   declarations: [
     AppComponent, WordSuggestionComponent, GridDisplayComponent,
-    CandidateDisplayComponent, CluesComponent, DictionarySearchComponent, MenubarComponent, CrosswordComponent, RedirectComponent, MetadataComponent, ClueComponent
+    CandidateDisplayComponent, CluesComponent, DictionarySearchComponent,
+    MenubarComponent, CrosswordComponent, RedirectComponent, MetadataComponent, ClueComponent
   ],
   imports: [
-    BrowserModule, ScrollingModule, FormsModule, ReactiveFormsModule, BrowserAnimationsModule, NgbModule,
+    BrowserModule, ScrollingModule, FormsModule, ReactiveFormsModule, BrowserAnimationsModule,
     QuillModule.forRoot({
       modules: {
         syntax: false,

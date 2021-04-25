@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SerializationService } from '../core/serialization.service';
 import { PuzzleStateService } from '../core/puzzle-state.service';
 import { saveAs } from 'file-saver';
-import { NgbNav } from '@ng-bootstrap/ng-bootstrap';
 import { DictionaryService } from '../core/dictionary.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-menubar',
@@ -11,15 +11,24 @@ import { DictionaryService } from '../core/dictionary.service';
   styleUrls: ['./menubar.component.css']
 })
 export class MenubarComponent implements OnInit {
-  @ViewChild('nav') tab!: NgbNav;
   private serializationService: SerializationService;
   private puzzleStateService: PuzzleStateService;
   private dictionaryService: DictionaryService;
+  readonly tabs = [
+    { link: 'fill', title: 'Fill' },
+    { link: 'clues', title: 'Clues' },
+    { link: 'info', title: 'Info' },
+    { link: 'search', title: 'Search' },
+  ];
+  route: ActivatedRoute;
 
-  constructor(serializationService: SerializationService, puzzleStateService: PuzzleStateService, dictionaryService: DictionaryService) {
+  constructor(
+    serializationService: SerializationService, puzzleStateService: PuzzleStateService,
+    dictionaryService: DictionaryService, route: ActivatedRoute) {
     this.serializationService = serializationService;
     this.puzzleStateService = puzzleStateService;
     this.dictionaryService = dictionaryService;
+    this.route = route;
   }
 
   ngOnInit(): void {

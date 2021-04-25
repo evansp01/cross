@@ -1,12 +1,15 @@
-<span class="mb-1">Search dictionary for words:</span>
-<input class="form-control form-control-sm shadow-none dictionary-scroll mb-1" placeholder="Regex" type="text"
-    [formControl]="searchStringForm">
-<small class="text-danger" *ngIf="searchStringForm.invalid && (searchStringForm.dirty || searchStringForm.touched)">
-    &nbsp;invalid regex
-</small>
+<div class="h-100 d-flex flex-column">
+    <span class="mb-1">Search dictionary for words:</span>
+    <input class="form-control form-control-sm shadow-none dictionary-scroll mb-1" placeholder="Regex" type="text"
+        [formControl]="searchStringForm">
+    <small class="text-danger" *ngIf="searchStringForm.invalid && (searchStringForm.dirty || searchStringForm.touched)">
+        &nbsp;invalid regex
+    </small>
 
-<cdk-virtual-scroll-viewport itemSize="20" minBufferPx="800" maxBufferPx="1200" class="dictionary-scroll flex-grow-1">
-    <div *cdkVirtualFor="let item of words" style="height: 20px">
-        {{ item }}
-    </div>
-</cdk-virtual-scroll-viewport>
+    <cdk-virtual-scroll-viewport itemSize="20" minBufferPx="800" maxBufferPx="1200"
+        class="dictionary-scroll flex-grow-1">
+        <div *cdkVirtualFor="let item of words" style="height: 20px">
+            {{ item }}
+        </div>
+    </cdk-virtual-scroll-viewport>
+</div>

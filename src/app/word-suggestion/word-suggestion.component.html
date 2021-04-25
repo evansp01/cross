@@ -1,17 +1,19 @@
-<span class="mb-1">Try characters for the current square</span>
-<div class="form-inline mb-1">
-  <input class="form-control form-control-sm col-sm-3 shadow-none mr-1" placeholder="Regex" type="text"
-    [formControl]="searchStringForm">
-  <button class="btn btn-sm btn-light shadow-none" (click)="setVowel()">Vowel</button>
-  <button class="btn btn-sm btn-light shadow-none" (click)="setConsonant()">Consonant</button>
-  <small class="text-danger" *ngIf="searchStringForm.invalid && (searchStringForm.dirty || searchStringForm.touched)">
-    &nbsp;invalid regex
-  </small>
-</div>
+<div class="h-100 d-flex flex-column">
+  <span class="mb-1">Try characters for the current square</span>
+  <div class="form-inline mb-1">
+    <input class="form-control form-control-sm shadow-none mr-1" placeholder="Regex" type="text"
+      [formControl]="searchStringForm">
+    <button class="btn btn-sm btn-light shadow-none" (click)="setVowel()">Vowel</button>
+    <button class="btn btn-sm btn-light shadow-none" (click)="setConsonant()">Consonant</button>
+    <small class="text-danger" *ngIf="searchStringForm.invalid && (searchStringForm.dirty || searchStringForm.touched)">
+      &nbsp;invalid regex
+    </small>
+  </div>
 
-<app-candidate-display class="flex-grow-1" label="Across Word" [word]="acrossWord"
-  [searchCharacter]="searchStringForm.value">
-</app-candidate-display>
-<app-candidate-display class="flex-grow-1" label="Down Word" [word]="downWord"
-  [searchCharacter]="searchStringForm.value">
-</app-candidate-display>
+  <app-candidate-display class="flex-grow-1" label="Across Word" [word]="acrossWord"
+    [searchCharacter]="searchStringForm.value">
+  </app-candidate-display>
+  <app-candidate-display class="flex-grow-1" label="Down Word" [word]="downWord"
+    [searchCharacter]="searchStringForm.value">
+  </app-candidate-display>
+</div>

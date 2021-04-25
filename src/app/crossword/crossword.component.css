@@ -1,0 +1,4 @@
+.router-window > router-outlet + ::ng-deep * {
+    height: 100%;
+    width:100%;
+}
