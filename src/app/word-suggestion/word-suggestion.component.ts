@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
+import { AbstractControl, UntypedFormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { DictionaryService } from '../core/dictionary.service';
 import { DisplayWord, DisplayStateService } from '../core/display-state.service';
@@ -28,13 +28,13 @@ export class WordSuggestionComponent implements OnInit, OnDestroy {
 
   acrossWord: DisplayWord | null;
   downWord: DisplayWord | null;
-  searchStringForm: FormControl;
+  searchStringForm: UntypedFormControl;
 
   constructor(gridDisplay: DisplayStateService) {
     this.gridDisplay = gridDisplay;
     this.acrossWord = null;
     this.downWord = null;
-    this.searchStringForm = new FormControl('', [
+    this.searchStringForm = new UntypedFormControl('', [
       invalidRegexValidator()
     ]);
   }

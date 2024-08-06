@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, ValidatorFn } from '@angular/forms';
+import { AbstractControl, UntypedFormControl, ValidatorFn } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { DictionaryService } from '../core/dictionary.service';
 
@@ -24,12 +24,12 @@ export function invalidRegexValidator(): ValidatorFn {
 export class DictionarySearchComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   private dictionaryService: DictionaryService;
-  searchStringForm: FormControl;
+  searchStringForm: UntypedFormControl;
   words: string[];
 
   constructor(dictionaryService: DictionaryService) {
     this.dictionaryService = dictionaryService;
-    this.searchStringForm = new FormControl('', [
+    this.searchStringForm = new UntypedFormControl('', [
       invalidRegexValidator()
     ]);
     this.words = [];
